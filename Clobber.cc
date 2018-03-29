@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <cstdlib>
+
 using namespace std;
 
 const int MAX_BORD = 100;
@@ -27,7 +28,7 @@ private:
     int bord[MAX_BORD][MAX_BORD];
     int beurt;
     int vorigeAanZet;
-    Basisspeler* spelers[MAX_SPELERS];
+    Basisspeler *spelers[MAX_SPELERS];
 
     int initSpelers();
 
@@ -38,21 +39,31 @@ public:
     int aanZet;
 
     Clobber();
+
     Clobber(const int h, const int b);
+
     void init();
+
     void print() const;
+
     int winnaar() const;
+
     int aantalZetten(const int speler) const;
+
     void doeZet(const int zetNummer);
+
     int volgendeSpeler() const;
+
     void volgendeZet();
+
     bool isBezig() const;
+
     int speelSpel();
 };
 
 class Basisspeler {
 protected:
-    Clobber* spel;
+    Clobber *spel;
 
 public:
     virtual int volgendeZet() = 0;
@@ -82,8 +93,8 @@ void Clobber::init() {
     beurt = 0;
     aanZet = 0;
     aantalSpelers = initSpelers();
-    for(int i = 0; i < hoogte; i++) {
-        for(int j = 0; j < breedte; j++) {
+    for (int i = 0; i < hoogte; i++) {
+        for (int j = 0; j < breedte; j++) {
             bord[i][j] = rand() % aantalSpelers; // vul bord random
         }
     }
@@ -91,10 +102,10 @@ void Clobber::init() {
 
 int Clobber::volgendeSpeler() const {
     int volgende = (aanZet + 1) % aantalSpelers;
-    while(aantalZetten(volgende) == 0 && volgende != aanZet) {
+    while (aantalZetten(volgende) == 0 && volgende != aanZet) {
         volgende = (volgende + 1) % aantalSpelers;
     }
-    if(volgende == aanZet) {
+    if (volgende == aanZet) {
         return ONBEKEND;
     }
     return volgende;
@@ -108,8 +119,8 @@ void Clobber::volgendeZet() {
 
 //is spel nog bezig?
 bool Clobber::isBezig() const {
-    for(int i = 0; i < aantalSpelers; i++) {
-        if(aantalZetten(i) > 0) {
+    for (int i = 0; i < aantalSpelers; i++) {
+        if (aantalZetten(i) > 0) {
             return true;
         }
     }
@@ -118,7 +129,7 @@ bool Clobber::isBezig() const {
 
 //wie heeft gewonnen?
 int Clobber::winnaar() const {
-    if(isBezig()) {
+    if (isBezig()) {
         return ONBEKEND;
     }
     return vorigeAanZet;
@@ -127,16 +138,16 @@ int Clobber::winnaar() const {
 //hoeveel zetten heeft speler?
 int Clobber::aantalZetten(const int speler) const {
     int teller = 0;
-    for(int i = 0; i < hoogte; i++)
-        for(int j = 0; j < breedte; j++)
-            if(bord[i][j] == speler) {
-                if(i > 0 && bord[i - 1][j] != bord[i][j] && bord[i - 1][j] != LEEG_VAKJE)
+    for (int i = 0; i < hoogte; i++)
+        for (int j = 0; j < breedte; j++)
+            if (bord[i][j] == speler) {
+                if (i > 0 && bord[i - 1][j] != bord[i][j] && bord[i - 1][j] != LEEG_VAKJE)
                     teller++;
-                if(j > 0 && bord[i][j - 1] != bord[i][j] && bord[i][j - 1] != LEEG_VAKJE)
+                if (j > 0 && bord[i][j - 1] != bord[i][j] && bord[i][j - 1] != LEEG_VAKJE)
                     teller++;
-                if(j < breedte - 1 && bord[i][j + 1] != bord[i][j] && bord[i][j + 1] != LEEG_VAKJE)
+                if (j < breedte - 1 && bord[i][j + 1] != bord[i][j] && bord[i][j + 1] != LEEG_VAKJE)
                     teller++;
-                if(i < hoogte - 1 && bord[i + 1][j] != bord[i][j] && bord[i + 1][j] != LEEG_VAKJE)
+                if (i < hoogte - 1 && bord[i + 1][j] != bord[i][j] && bord[i + 1][j] != LEEG_VAKJE)
                     teller++;
             }
     return teller;
@@ -145,11 +156,11 @@ int Clobber::aantalZetten(const int speler) const {
 //doe zetNummer van de mogelijke zetten
 void Clobber::doeZet(const int zetNummer) {
     int teller = 0;
-    for(int i = 0; i < hoogte; i++) {
-        for(int j = 0; j < breedte; j++) {
-            if(bord[i][j] == aanZet) {
-                if(i > 0 && bord[i - 1][j] != bord[i][j] && bord[i - 1][j] != LEEG_VAKJE) {
-                    if(teller == zetNummer) {
+    for (int i = 0; i < hoogte; i++) {
+        for (int j = 0; j < breedte; j++) {
+            if (bord[i][j] == aanZet) {
+                if (i > 0 && bord[i - 1][j] != bord[i][j] && bord[i - 1][j] != LEEG_VAKJE) {
+                    if (teller == zetNummer) {
                         bord[i][j] = LEEG_VAKJE;
                         bord[i - 1][j] = aanZet;
                         volgendeZet();
@@ -157,8 +168,8 @@ void Clobber::doeZet(const int zetNummer) {
                     }
                     teller++;
                 }
-                if(j > 0 && bord[i][j - 1] != bord[i][j] && bord[i][j - 1] != LEEG_VAKJE) {
-                    if(teller == zetNummer) {
+                if (j > 0 && bord[i][j - 1] != bord[i][j] && bord[i][j - 1] != LEEG_VAKJE) {
+                    if (teller == zetNummer) {
                         bord[i][j] = LEEG_VAKJE;
                         bord[i][j - 1] = aanZet;
                         volgendeZet();
@@ -166,8 +177,8 @@ void Clobber::doeZet(const int zetNummer) {
                     }
                     teller++;
                 }
-                if(j < breedte - 1 && bord[i][j + 1] != bord[i][j] && bord[i][j + 1] != LEEG_VAKJE) {
-                    if(teller == zetNummer) {
+                if (j < breedte - 1 && bord[i][j + 1] != bord[i][j] && bord[i][j + 1] != LEEG_VAKJE) {
+                    if (teller == zetNummer) {
                         bord[i][j] = LEEG_VAKJE;
                         bord[i][j + 1] = aanZet;
                         volgendeZet();
@@ -175,8 +186,8 @@ void Clobber::doeZet(const int zetNummer) {
                     }
                     teller++;
                 }
-                if(i < hoogte - 1 && bord[i + 1][j] != bord[i][j] && bord[i + 1][j] != LEEG_VAKJE) {
-                    if(teller == zetNummer) {
+                if (i < hoogte - 1 && bord[i + 1][j] != bord[i][j] && bord[i + 1][j] != LEEG_VAKJE) {
+                    if (teller == zetNummer) {
                         bord[i][j] = LEEG_VAKJE;
                         bord[i + 1][j] = aanZet;
                         volgendeZet();
@@ -191,33 +202,32 @@ void Clobber::doeZet(const int zetNummer) {
 
 void Clobber::print() const {
     cout << "Toestand " << beurt << endl << "   ";
-    for(int j = 0; j < breedte; j++)
+    for (int j = 0; j < breedte; j++)
         cout << "  " << j % 10;
     cout << endl;
-    for(int i = 0; i < hoogte; i++) {
-        if ( i < 10 )
-	  cout << " " << i << " ";
-	else
-	  cout << i << " ";
-        for(int j = 0; j < breedte; j++)
-            if(bord[i][j] == LEEG_VAKJE)
+    for (int i = 0; i < hoogte; i++) {
+        if (i < 10)
+            cout << " " << i << " ";
+        else
+            cout << i << " ";
+        for (int j = 0; j < breedte; j++)
+            if (bord[i][j] == LEEG_VAKJE)
                 cout << "  .";
-            else if(bord[i][j] < 10)
+            else if (bord[i][j] < 10)
                 cout << "  " << bord[i][j];
             else
                 cout << " " << bord[i][j];
         cout << endl;
     }
-    if(aanZet == ONBEKEND) {
+    if (aanZet == ONBEKEND) {
         cout << "Niemand is aan de beurt" << endl << endl;
-    }
-    else {
+    } else {
         cout << "Speler " << aanZet << " is aan de beurt" << endl << endl;
     }
 }
 
 int Clobber::speelSpel() {
-    while(isBezig()) {
+    while (isBezig()) {
         print();
         doeZet(spelers[aanZet]->volgendeZet());
     }
@@ -225,10 +235,10 @@ int Clobber::speelSpel() {
     return winnaar();
 }
 
-int main(int argc, char *argv[ ]) {
+int main(int argc, char *argv[]) {
     if (argc != 4) {
-      cout << "Gebruik: " << argv[0] << " <hoogte> <breedte> <seed>" << endl;
-      return 1;
+        cout << "Gebruik: " << argv[0] << " <hoogte> <breedte> <seed>" << endl;
+        return 1;
     }
     int m = atoi(argv[1]);
     int n = atoi(argv[2]);

@@ -6,16 +6,17 @@ public:
     int speelRandomSpel(Clobber &randomspel);
 
 public:
-    MCSpeler(Clobber* spelPointer);
+    MCSpeler(Clobber *spelPointer);
+
     int volgendeZet();
 };
 
-MCSpeler::MCSpeler(Clobber * spelPointer) {
+MCSpeler::MCSpeler(Clobber *spelPointer) {
     spel = spelPointer;
 }
 
 int MCSpeler::speelRandomSpel(Clobber &randomspel) {
-    while(randomspel.isBezig()) {
+    while (randomspel.isBezig()) {
         randomspel.doeZet(rand() % randomspel.aantalZetten(randomspel.aanZet));
     }
     return randomspel.winnaar();
@@ -28,16 +29,16 @@ int MCSpeler::volgendeZet() {
     int besteZet = 0;
     int besteScore = 0;
     int aantal = spel->aantalZetten(spel->aanZet);
-    for(int i = 0; i < aantal; i++) {
+    for (int i = 0; i < aantal; i++) {
         huidigeScore = 0;
-        for(int k = 0; k < MC_POTJES; k++) {
+        for (int k = 0; k < MC_POTJES; k++) {
             kopie = *spel;
             kopie.doeZet(i);
-            if(speelRandomSpel(kopie) == spel->aanZet) {
+            if (speelRandomSpel(kopie) == spel->aanZet) {
                 huidigeScore++;
             }
         }
-        if(huidigeScore > besteScore) {
+        if (huidigeScore > besteScore) {
             besteZet = i;
             besteScore = huidigeScore;
         }
