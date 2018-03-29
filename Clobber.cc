@@ -24,7 +24,7 @@ const int LEEG_VAKJE = -1;
 class Basisspeler;
 
 class Clobber {
-private:
+public:
     int bord[MAX_BORD][MAX_BORD];
     int beurt;
     int vorigeAanZet;
@@ -32,7 +32,6 @@ private:
 
     int initSpelers();
 
-public:
     int aantalSpelers;
     int hoogte;
     int breedte;
@@ -72,11 +71,12 @@ public:
 #include "spelers/Dommespeler.cc"
 #include "spelers/MCSpeler.cc"
 #include "spelers/Randomspeler.cc"
+#include "spelers/DeBoerSpaink.cc"
 //TODO voeg regel(s) toe met #include van eigen speler(s)
 
 //TODO bepaal hier welke spelers 0, 1, ... gaan spelen
 int Clobber::initSpelers() {
-    spelers[0] = new Randomspeler(this);
+    spelers[0] = new DeBoerSpaink(this);
     spelers[1] = new Randomspeler(this);
     return 2; // aantal spelers
 }
