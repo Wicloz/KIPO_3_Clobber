@@ -2,15 +2,17 @@
 
 class DeBoerSpaink : public Basisspeler {
 public:
-    DeBoerSpaink(Clobber* spelPointer);
+    DeBoerSpaink(Clobber *spelPointer);
+
     int volgendeZet();
 
 private:
-    int evaluatie(int speler);
-    int minimax(Clobber* spel, int& zet, int diepte);
+    int evaluatie(Clobber *spel);
+
+    int minimax(Clobber *spel, int &zet, int diepte);
 };
 
-DeBoerSpaink::DeBoerSpaink(Clobber* spelPointer) {
+DeBoerSpaink::DeBoerSpaink(Clobber *spelPointer) {
     spel = spelPointer;
 }
 
@@ -20,12 +22,12 @@ int DeBoerSpaink::volgendeZet() {
     return zet;
 }
 
-int DeBoerSpaink::minimax(Clobber* spel, int& zet, int diepte) {
+int DeBoerSpaink::minimax(Clobber *spel, int &zet, int diepte) {
     if (!spel->isBezig() || diepte > 4) {
-        return evaluatie(spel->aanZet);
+        return evaluatie(spel);
     }
 
-    int waarde = spel->aanZet ? INT_MAX;
+    int waarde = spel->aanZet ? INT_MIN : INT_MAX;
 
     for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
         Clobber kopie = *spel;
@@ -40,15 +42,16 @@ int DeBoerSpaink::minimax(Clobber* spel, int& zet, int diepte) {
     return waarde;
 }
 
-int DeBoerSpaink::evaluatie(int speler) {
-    if (spel->winnaar() == speler)
+int DeBoerSpaink::evaluatie(Clobber *spel) {
+    if (spel->winnaar() == 0)
         return INT_MAX;
 
     int aantalZettenTegenstanders = 0;
     for (int i = 0; i < spel->aantalSpelers; ++i) {
-        if (i != speler)
+        if (i != 0)
             aantalZettenTegenstanders += spel->aantalZetten(i);
     }
-
-    return (spel->aantalSpelers - 1) * spel->aantalZetten(speler) / aantalZettenTegenstanders;
+    if (aantalZettenTegenstanders != 0)
+        return 100 * ((float)spel->aantalSpelers - 1.0f) * (float)spel->aantalZetten(0) / (float)aantalZettenTegenstanders;
+    return INT_MIN;
 }
