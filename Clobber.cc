@@ -244,8 +244,10 @@ int main(int argc, char *argv[]) {
     int n = atoi(argv[2]);
     srand(atoi(argv[3]));
     Clobber potje(m, n);
+    clock_t begin = clock();
     int winnaar = potje.speelSpel();
 
     cout << "Winnaar: " << winnaar << endl;
+    cout << "Time taken: " << double(clock() - begin) / CLOCKS_PER_SEC << " seconds" << endl;
     return 0;
 }

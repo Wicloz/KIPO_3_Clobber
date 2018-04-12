@@ -7,9 +7,16 @@ public:
     int volgendeZet();
 
 private:
+    const int evalSpeler = 0;
+    const int cutoff = 6;
+
     int evaluatie(Clobber *spel);
 
     int minimax(Clobber *spel, int &zet, int diepte);
+
+    int alphaBetaMax(Clobber *spel, int alpha, int beta, int &zet, int diepte);
+
+    int alphaBetaMin(Clobber *spel, int alpha, int beta, int &zet, int diepte);
 };
 
 DeBoerSpaink::DeBoerSpaink(Clobber *spelPointer) {
@@ -18,12 +25,13 @@ DeBoerSpaink::DeBoerSpaink(Clobber *spelPointer) {
 
 int DeBoerSpaink::volgendeZet() {
     int zet = rand() % spel->aantalZetten(spel->aanZet);
-    minimax(spel, zet, 0);
+    //minimax(spel, zet, 0);
+    alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0);
     return zet;
 }
 
 int DeBoerSpaink::minimax(Clobber *spel, int &zet, int diepte) {
-    if (!spel->isBezig() || diepte > 4) {
+    if (!spel->isBezig() || diepte > cutoff) {
         return evaluatie(spel);
     }
 
@@ -42,16 +50,54 @@ int DeBoerSpaink::minimax(Clobber *spel, int &zet, int diepte) {
     return waarde;
 }
 
+int DeBoerSpaink::alphaBetaMax(Clobber *spel, int alpha, int beta, int &zet, int diepte) {
+    if (!spel->isBezig() || diepte > cutoff) {
+        return evaluatie(spel);
+    }
+
+    for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
+        Clobber kopie = *spel;
+        kopie.doeZet(i);
+
+        int nieuweAlpha = max(alpha, alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
+        if (!diepte && nieuweAlpha > alpha)
+            zet = i;
+        alpha = nieuweAlpha;
+        if (alpha >= beta)
+            return beta;
+    }
+
+    return alpha;
+}
+
+int DeBoerSpaink::alphaBetaMin(Clobber *spel, int alpha, int beta, int &zet, int diepte) {
+    if (!spel->isBezig() || diepte > cutoff) {
+        return evaluatie(spel);
+    }
+
+    for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
+        Clobber kopie = *spel;
+        kopie.doeZet(i);
+
+        beta = min(beta, alphaBetaMax(&kopie, alpha, beta, zet, diepte + 1));
+        if (beta >= alpha)
+            return alpha;
+    }
+
+    return beta;
+}
+
 int DeBoerSpaink::evaluatie(Clobber *spel) {
-    if (spel->winnaar() == 0)
+    if (spel->winnaar() == evalSpeler)
         return INT_MAX;
 
     int aantalZettenTegenstanders = 0;
     for (int i = 0; i < spel->aantalSpelers; ++i) {
-        if (i != 0)
+        if (i != evalSpeler)
             aantalZettenTegenstanders += spel->aantalZetten(i);
     }
-    if (aantalZettenTegenstanders != 0)
-        return 100 * ((float)spel->aantalSpelers - 1.0f) * (float)spel->aantalZetten(0) / (float)aantalZettenTegenstanders;
+    if (aantalZettenTegenstanders != evalSpeler)
+        return 100 * (float) ((spel->aantalSpelers - 1) * spel->aantalZetten(evalSpeler)) /
+                (float) aantalZettenTegenstanders;
     return INT_MIN;
 }
