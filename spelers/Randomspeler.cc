@@ -1,12 +1,11 @@
 
 class Randomspeler : public Basisspeler {
 public:
-    Randomspeler(Clobber *spelPointer);
-
+    Randomspeler(Clobber* spelPointer);
     int volgendeZet();
 };
 
-Randomspeler::Randomspeler(Clobber *spelPointer) {
+Randomspeler::Randomspeler(Clobber * spelPointer) {
     spel = spelPointer;
 }
 
