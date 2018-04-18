@@ -2,10 +2,16 @@
 #include <cstdlib>
 #include <vector>
 
-//https://www.researchgate.net/publication/221932254_New_Trends_in_Clobber_Programming
+using namespace std;
+
+// https://www.researchgate.net/publication/221932254_New_Trends_in_Clobber_Programming
+
+bool inBordMatrix(int i, int j, Clobber* spel) {
+    return i > 0 && j > 0 && i < spel->hoogte && j < spel->breedte;
+}
 
 struct coordinaat {
-    coordinaat(int i, int j) : i(i), j(j){};
+    coordinaat(int i, int j) : i(i), j(j) {};
     int i;
     int j;
 };
@@ -13,19 +19,20 @@ struct coordinaat {
 class Blok {
 private:
     vector<coordinaat> coordinaten;
-    Clobber *spel;
+    Clobber* spel;
     bool allemaalDezelfde = true;
 
 public:
-    Blok(Clobber *spel) : spel(spel) {};
+    Blok(Clobber* spel) : spel(spel) {};
 
     void vindRest(bool bezocht[MAX_BORD][MAX_BORD], int i, int j) {
-        int vorigeKleur = spel->bord[i-1][j-1];
+        int vorigeKleur = spel->bord[i - 1][j - 1];
         for (int k = -1; k < 2; ++k)
             for (int l = -1; l < 2; ++l) {
                 int x = k + i;
                 int y = l + j;
-                if ((i == 0 || j == 0) && !bezocht[x][y] && spel->bord[x][y] != LEEG_VAKJE) {
+                if (inBordMatrix(x, y, spel) && (i == 0 || j == 0) && !bezocht[x][y] &&
+                    spel->bord[x][y] != LEEG_VAKJE) {
                     if (vorigeKleur != spel->bord[x][y])
                         allemaalDezelfde = false;
                     bezocht[x][y] = true;
@@ -40,15 +47,15 @@ public:
             return 0;
 
         int ander[4][2] = {{0,  -1},
-                          {0,  1},
-                          {-1, 0},
-                          {1,  0}};
+                           {0,  1},
+                           {-1, 0},
+                           {1,  0}};
         int zelf[4][2] = {{-1, -1},
-                         {-1, 1},
-                         {1,  -1},
-                         {1,  1}};
+                          {-1, 1},
+                          {1,  -1},
+                          {1,  1}};
         int score = 1;
-        for (auto &coordinaat : coordinaten) {
+        for (auto& coordinaat : coordinaten) {
             for (int i = 0; i < 4; ++i) {
                 if (spel->bord[ander[0][i]][ander[1][i]] != speler)
                     ++score;
@@ -60,6 +67,9 @@ public:
     };
 
     int blokEvaluatie(int evalSpeler) {
+        if (allemaalDezelfde)
+            return 0;
+
         int scoreSpeler = scoreBlok(evalSpeler);
         int scoreTegenstander = 0;
         for (int i = 0; i < spel->aantalSpelers; ++i) {
@@ -76,7 +86,7 @@ public:
 
 class DeBoerSpaink : public Basisspeler {
 public:
-    DeBoerSpaink(Clobber *spelPointer);
+    DeBoerSpaink(Clobber* spelPointer);
 
     int volgendeZet();
 
@@ -86,20 +96,16 @@ private:
     int knopenBezocht = 0;
     bool diepKijken = true;
 
-    int evaluatie(Clobber *spel);
+    int evaluatie(Clobber* spel);
 
-    int minimax(Clobber *spel, int &zet, int diepte);
+    int minimax(Clobber* spel, int& zet, int diepte);
 
-    int alphaBetaMax(Clobber *spel, int alpha, int beta, int &zet, int diepte);
+    int alphaBetaMax(Clobber* spel, int alpha, int beta, int& zet, int diepte);
 
-    int alphaBetaMin(Clobber *spel, int alpha, int beta, int &zet, int diepte);
-
-    int blokEvaluatie(Blok blok);
-
-    vector <Blok> vindBlokken(Clobber *spel);
+    int alphaBetaMin(Clobber* spel, int alpha, int beta, int& zet, int diepte);
 };
 
-DeBoerSpaink::DeBoerSpaink(Clobber *spelPointer) {
+DeBoerSpaink::DeBoerSpaink(Clobber* spelPointer) {
     spel = spelPointer;
 }
 
@@ -115,7 +121,7 @@ int DeBoerSpaink::volgendeZet() {
     return zet;
 }
 
-int DeBoerSpaink::minimax(Clobber *spel, int &zet, int diepte) {
+int DeBoerSpaink::minimax(Clobber* spel, int& zet, int diepte) {
     if (!spel->isBezig() || diepte > cutoff) {
         return evaluatie(spel);
     }
@@ -135,7 +141,7 @@ int DeBoerSpaink::minimax(Clobber *spel, int &zet, int diepte) {
     return waarde;
 }
 
-int DeBoerSpaink::alphaBetaMax(Clobber *spel, int alpha, int beta, int &zet, int diepte) {
+int DeBoerSpaink::alphaBetaMax(Clobber* spel, int alpha, int beta, int& zet, int diepte) {
     knopenBezocht++;
     if (!spel->isBezig() || (knopenBezocht > 2000000 && !diepKijken)) {
         return evaluatie(spel);
@@ -156,7 +162,7 @@ int DeBoerSpaink::alphaBetaMax(Clobber *spel, int alpha, int beta, int &zet, int
     return alpha;
 }
 
-int DeBoerSpaink::alphaBetaMin(Clobber *spel, int alpha, int beta, int &zet, int diepte) {
+int DeBoerSpaink::alphaBetaMin(Clobber* spel, int alpha, int beta, int& zet, int diepte) {
     knopenBezocht++;
     if (!spel->isBezig() || (knopenBezocht > 2000000 && !diepKijken)) {
         return evaluatie(spel);
@@ -174,50 +180,36 @@ int DeBoerSpaink::alphaBetaMin(Clobber *spel, int alpha, int beta, int &zet, int
     return beta;
 }
 
-vector <Blok> DeBoerSpaink::vindBlokken(Clobber *spel) {
-    vector <Blok> blokken;
-    bool bezocht[MAX_BORD][MAX_BORD];
-    for (int i = 0; i < spel->hoogte; ++i)
-        for (int j = 0; j < spel->breedte; ++j)
-            bezocht[i][j] = false;
+int DeBoerSpaink::evaluatie(Clobber* spel) {
+    if (!spel->isBezig()) {
+        if (spel->winnaar() == evalSpeler) {
+            return INT_MAX;
+        } else {
+            return INT_MIN;
+        }
+    }
 
-    for (int i = 0; i < spel->hoogte; ++i)
+    bool bezocht[MAX_BORD][MAX_BORD];
+    for (int i = 0; i < spel->hoogte; ++i) {
+        for (int j = 0; j < spel->breedte; ++j) {
+            bezocht[i][j] = false;
+        }
+    }
+
+    vector<Blok> blokken;
+    for (int i = 0; i < spel->hoogte; ++i) {
         for (int j = 0; j < spel->breedte; ++j) {
             if (spel->bord[i][j] != LEEG_VAKJE && !bezocht[i][j]) {
-                blokken.push_back(Blok(spel));
+                blokken.emplace_back(Blok(spel));
                 blokken.back().vindRest(bezocht, i, j);
             }
         }
-}
-
-int DeBoerSpaink::evaluatie(Clobber *spel) {
-    // Utility:
-    if (!spel->isBezig()) {
-        if (spel->winnaar() == evalSpeler)
-            return INT_MAX;
-        else
-            return INT_MIN;
     }
 
-    // Anders, heuristiek
     int evaluatie = 0;
-
-    vector <Blok> blokken = vindBlokken(spel);
-    for (auto blok : blokken) {
+    for (Blok& blok : blokken) {
         evaluatie += blok.blokEvaluatie(evalSpeler);
     }
 
     return evaluatie;
-//
-//
-//    int aantalZettenTegenstanders = 0;
-//    for (int i = 0; i < spel->aantalSpelers; ++i) {
-//        if (i != evalSpeler)
-//            aantalZettenTegenstanders += spel->aantalZetten(i);
-//    }
-//    if (aantalZettenTegenstanders != evalSpeler)
-//        return 100 * (float) ((spel->aantalSpelers - 1) * spel->aantalZetten(evalSpeler)) /
-//                (float) aantalZettenTegenstanders;
-//    return INT_MIN;
 }
-
