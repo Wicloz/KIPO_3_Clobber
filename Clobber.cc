@@ -62,14 +62,14 @@ public:
 #include "spelers/Dommespeler.cc"
 #include "spelers/MCSpeler.cc"
 #include "spelers/Randomspeler.cc"
+#include "spelers/DeBoerSpaink.cc"
 //TODO voeg regel(s) toe met #include van eigen speler(s)
 
 //TODO bepaal hier welke spelers 0, 1, ... gaan spelen
 int Clobber::initSpelers() {
-    spelers[0] = new Randomspeler(this);
+    spelers[0] = new DeBoerSpaink(this);
     spelers[1] = new Randomspeler(this);
-    spelers[2] = new Randomspeler(this);
-    return 3; // aantal spelers
+    return 2; // aantal spelers
 }
 
 Clobber::Clobber() {}
