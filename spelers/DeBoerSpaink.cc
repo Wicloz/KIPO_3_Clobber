@@ -10,15 +10,15 @@ bool inBordMatrix(int i, int j, Clobber* spel) {
     return i > 0 && j > 0 && i < spel->hoogte && j < spel->breedte;
 }
 
-struct coordinaat {
-    coordinaat(int i, int j) : i(i), j(j) {};
+struct Coordinaat {
+    Coordinaat(int i, int j) : i(i), j(j) {};
     int i;
     int j;
 };
 
 class Blok {
 private:
-    vector<coordinaat> coordinaten;
+    vector<Coordinaat> coordinaten;
     Clobber* spel;
     bool allemaalDezelfde = true;
 
@@ -36,7 +36,7 @@ public:
                     if (vorigeKleur != spel->bord[x][y])
                         allemaalDezelfde = false;
                     bezocht[x][y] = true;
-                    coordinaten.emplace_back(coordinaat(x, y));
+                    coordinaten.emplace_back(Coordinaat(x, y));
                     vindRest(bezocht, x, y);
                 }
             }
@@ -55,7 +55,7 @@ public:
                           {1,  -1},
                           {1,  1}};
         int score = 1;
-        for (auto& coordinaat : coordinaten) {
+        for (Coordinaat& coordinaat : coordinaten) {
             for (int i = 0; i < 4; ++i) {
                 if (spel->bord[ander[0][i]][ander[1][i]] != speler)
                     ++score;
@@ -81,7 +81,7 @@ public:
             return scoreSpeler / scoreTegenstander;
         else
             return -1 * scoreTegenstander / scoreSpeler;
-    }
+    };
 };
 
 class DeBoerSpaink : public Basisspeler {
