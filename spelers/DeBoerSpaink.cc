@@ -23,23 +23,32 @@ private:
     bool allemaalDezelfde = true;
 
 public:
-    Blok(Clobber* spel) : spel(spel) {};
+    Blok(Clobber* spelPointer) : spel(spelPointer) {};
 
-    void vindRest(bool bezocht[MAX_BORD][MAX_BORD], int i, int j) {
-        int vorigeKleur = spel->bord[i - 1][j - 1];
-        for (int k = -1; k < 2; ++k)
+    void vindBlokVakjes(bool bezocht[MAX_BORD][MAX_BORD], int i, int j) {
+        int eersteKleur = LEEG_VAKJE;
+
+        for (int k = -1; k < 2; ++k) {
             for (int l = -1; l < 2; ++l) {
                 int x = k + i;
                 int y = l + j;
-                if (inBordMatrix(x, y, spel) && (i == 0 || j == 0) && !bezocht[x][y] &&
+                if (inBordMatrix(x, y, spel) && (l == 0 || k == 0) && !bezocht[x][y] &&
                     spel->bord[x][y] != LEEG_VAKJE) {
-                    if (vorigeKleur != spel->bord[x][y])
+
+                    if (eersteKleur == LEEG_VAKJE) {
+                        eersteKleur = spel->bord[x][y];
+                    }
+                    if (eersteKleur != spel->bord[x][y]) {
                         allemaalDezelfde = false;
+                    }
+
                     bezocht[x][y] = true;
                     coordinaten.emplace_back(Coordinaat(x, y));
-                    vindRest(bezocht, x, y);
+
+                    vindBlokVakjes(bezocht, x, y);
                 }
             }
+        }
     };
 
     int scoreBlok(int speler) {
@@ -86,130 +95,118 @@ public:
 
 class DeBoerSpaink : public Basisspeler {
 public:
-    DeBoerSpaink(Clobber* spelPointer);
+    DeBoerSpaink(Clobber* spelPointer) : spel(spelPointer) {};
 
-    int volgendeZet();
+    int volgendeZet() {
+        int aantalZetten = spel->aantalZetten(spel->aanZet);
+        diepKijken = aantalZetten < 15;
+        knopenBezocht = 0;
+
+        int zet = rand() % aantalZetten;
+
+//        alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0);
+        minimax(spel, zet, 0);
+        return zet;
+    };
 
 private:
     const int evalSpeler = 0;
-    int cutoff = 6;
+    int cutoff = 2;
     int knopenBezocht = 0;
     bool diepKijken = true;
+    Clobber* spel = nullptr;
 
-    int evaluatie(Clobber* spel);
-
-    int minimax(Clobber* spel, int& zet, int diepte);
-
-    int alphaBetaMax(Clobber* spel, int alpha, int beta, int& zet, int diepte);
-
-    int alphaBetaMin(Clobber* spel, int alpha, int beta, int& zet, int diepte);
-};
-
-DeBoerSpaink::DeBoerSpaink(Clobber* spelPointer) {
-    spel = spelPointer;
-}
-
-int DeBoerSpaink::volgendeZet() {
-    int aantalZetten = spel->aantalZetten(spel->aanZet);
-    diepKijken = aantalZetten < 15;
-    knopenBezocht = 0;
-
-    int zet = rand() % aantalZetten;
-
-    alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0);
-    //minimax(spel, zet, 0);
-    return zet;
-}
-
-int DeBoerSpaink::minimax(Clobber* spel, int& zet, int diepte) {
-    if (!spel->isBezig() || diepte > cutoff) {
-        return evaluatie(spel);
-    }
-
-    int waarde = spel->aanZet ? INT_MIN : INT_MAX;
-
-    for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
-        Clobber kopie = *spel;
-        kopie.doeZet(i);
-
-        int nieuweWaarde = max(waarde, -minimax(&kopie, zet, diepte + 1));
-        if (!diepte && nieuweWaarde > waarde)
-            zet = i;
-        waarde = nieuweWaarde;
-    }
-
-    return waarde;
-}
-
-int DeBoerSpaink::alphaBetaMax(Clobber* spel, int alpha, int beta, int& zet, int diepte) {
-    knopenBezocht++;
-    if (!spel->isBezig() || (knopenBezocht > 2000000 && !diepKijken)) {
-        return evaluatie(spel);
-    }
-
-    for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
-        Clobber kopie = *spel;
-        kopie.doeZet(i);
-
-        int nieuweAlpha = max(alpha, alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
-        if (!diepte && nieuweAlpha > alpha)
-            zet = i;
-        alpha = nieuweAlpha;
-        if (alpha >= beta)
-            return beta;
-    }
-
-    return alpha;
-}
-
-int DeBoerSpaink::alphaBetaMin(Clobber* spel, int alpha, int beta, int& zet, int diepte) {
-    knopenBezocht++;
-    if (!spel->isBezig() || (knopenBezocht > 2000000 && !diepKijken)) {
-        return evaluatie(spel);
-    }
-
-    for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
-        Clobber kopie = *spel;
-        kopie.doeZet(i);
-
-        beta = min(beta, alphaBetaMax(&kopie, alpha, beta, zet, diepte + 1));
-        if (beta >= alpha)
-            return alpha;
-    }
-
-    return beta;
-}
-
-int DeBoerSpaink::evaluatie(Clobber* spel) {
-    if (!spel->isBezig()) {
-        if (spel->winnaar() == evalSpeler) {
-            return INT_MAX;
-        } else {
-            return INT_MIN;
-        }
-    }
-
-    bool bezocht[MAX_BORD][MAX_BORD];
-    for (int i = 0; i < spel->hoogte; ++i) {
-        for (int j = 0; j < spel->breedte; ++j) {
-            bezocht[i][j] = false;
-        }
-    }
-
-    vector<Blok> blokken;
-    for (int i = 0; i < spel->hoogte; ++i) {
-        for (int j = 0; j < spel->breedte; ++j) {
-            if (spel->bord[i][j] != LEEG_VAKJE && !bezocht[i][j]) {
-                blokken.emplace_back(Blok(spel));
-                blokken.back().vindRest(bezocht, i, j);
+    int evaluatie(Clobber* spel) {
+        if (!spel->isBezig()) {
+            if (spel->winnaar() == evalSpeler) {
+                return INT_MAX;
+            } else {
+                return INT_MIN;
             }
         }
-    }
 
-    int evaluatie = 0;
-    for (Blok& blok : blokken) {
-        evaluatie += blok.blokEvaluatie(evalSpeler);
-    }
+        bool bezocht[MAX_BORD][MAX_BORD];
+        for (int i = 0; i < spel->hoogte; ++i) {
+            for (int j = 0; j < spel->breedte; ++j) {
+                bezocht[i][j] = false;
+            }
+        }
 
-    return evaluatie;
-}
+        vector<Blok> blokken;
+        for (int i = 0; i < spel->hoogte; ++i) {
+            for (int j = 0; j < spel->breedte; ++j) {
+                if (spel->bord[i][j] != LEEG_VAKJE && !bezocht[i][j]) {
+                    blokken.emplace_back(Blok(spel));
+                    blokken.back().vindBlokVakjes(bezocht, i, j);
+                    return 0;
+                }
+            }
+        }
+
+        int evaluatie = 0;
+        for (Blok& blok : blokken) {
+            evaluatie += blok.blokEvaluatie(evalSpeler);
+        }
+
+        return evaluatie;
+    };
+
+    int minimax(Clobber* spel, int& zet, int diepte) {
+        if (!spel->isBezig() || diepte > cutoff) {
+            return evaluatie(spel);
+        }
+
+        int waarde = spel->aanZet ? INT_MIN : INT_MAX;
+
+        for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
+            Clobber kopie = *spel;
+            kopie.doeZet(i);
+
+            int nieuweWaarde = max(waarde, -minimax(&kopie, zet, diepte + 1));
+            if (!diepte && nieuweWaarde > waarde)
+                zet = i;
+            waarde = nieuweWaarde;
+        }
+
+        return waarde;
+    };
+
+    int alphaBetaMax(Clobber* spel, int alpha, int beta, int& zet, int diepte) {
+        knopenBezocht++;
+        if (!spel->isBezig() || (knopenBezocht > 2000000 && !diepKijken)) {
+            return evaluatie(spel);
+        }
+
+        for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
+            Clobber kopie = *spel;
+            kopie.doeZet(i);
+
+            int nieuweAlpha = max(alpha, alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
+            if (!diepte && nieuweAlpha > alpha)
+                zet = i;
+            alpha = nieuweAlpha;
+            if (alpha >= beta)
+                return beta;
+        }
+
+        return alpha;
+    };
+
+    int alphaBetaMin(Clobber* spel, int alpha, int beta, int& zet, int diepte) {
+        knopenBezocht++;
+        if (!spel->isBezig() || (knopenBezocht > 2000000 && !diepKijken)) {
+            return evaluatie(spel);
+        }
+
+        for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
+            Clobber kopie = *spel;
+            kopie.doeZet(i);
+
+            beta = min(beta, alphaBetaMax(&kopie, alpha, beta, zet, diepte + 1));
+            if (beta >= alpha)
+                return alpha;
+        }
+
+        return beta;
+    };
+};
