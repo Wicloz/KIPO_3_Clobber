@@ -7,7 +7,7 @@ using namespace std;
 // https://www.researchgate.net/publication/221932254_New_Trends_in_Clobber_Programming
 
 bool inBordMatrix(int i, int j, Clobber* spel) {
-    return i > 0 && j > 0 && i < spel->hoogte && j < spel->breedte;
+    return i >= 0 && j >= 0 && i < spel->hoogte && j < spel->breedte;
 }
 
 struct Coordinaat {
@@ -25,7 +25,7 @@ private:
 public:
     Blok(Clobber* spelPointer) : spel(spelPointer) {};
 
-    void vindBlokVakjes(bool bezocht[MAX_BORD][MAX_BORD], int i, int j) {
+    void vindBlokVakjes(bool (&bezocht)[MAX_BORD][MAX_BORD], int i, int j) {
         int eersteKleur = LEEG_VAKJE;
 
         for (int k = -1; k < 2; ++k) {
@@ -104,14 +104,14 @@ public:
 
         int zet = rand() % aantalZetten;
 
-//        alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0);
-        minimax(spel, zet, 0);
+        alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0);
+//        minimax(spel, zet, 0);
         return zet;
     };
 
 private:
     const int evalSpeler = 0;
-    int cutoff = 2;
+    int cutoff = -1;
     int knopenBezocht = 0;
     bool diepKijken = true;
     Clobber* spel = nullptr;
@@ -136,9 +136,9 @@ private:
         for (int i = 0; i < spel->hoogte; ++i) {
             for (int j = 0; j < spel->breedte; ++j) {
                 if (spel->bord[i][j] != LEEG_VAKJE && !bezocht[i][j]) {
-                    blokken.emplace_back(Blok(spel));
-                    blokken.back().vindBlokVakjes(bezocht, i, j);
-                    return 0;
+                    Blok newBlok = Blok(spel);
+                    newBlok.vindBlokVakjes(bezocht, i, j);
+                    blokken.emplace_back(newBlok);
                 }
             }
         }
