@@ -27,14 +27,14 @@ private:
     int eersteKleur = LEEG_VAKJE;
 
     int scoreBlok(const int& speler) {
-        int ander[4][2] = {{ 0,-1},
-                           { 0, 1},
+        int ander[4][2] = {{0,  -1},
+                           {0,  1},
                            {-1, 0},
-                           { 1, 0}};
-        int zelf[4][6] = {{-1,-1, 0,-1,-1, 0},
-                          {-1, 1,-1, 0, 0, 1},
-                          { 1,-1, 1, 0, 0 -1},
-                          { 1, 1, 0, 1, 1, 0}};
+                           {1,  0}};
+        int zelf[4][6] = {{-1, -1, 0,  -1, -1, 0},
+                          {-1, 1,  -1, 0,  0,  1},
+                          {1,  -1, 1,  0,  0,  -1},
+                          {1,  1,  0,  1,  1,  0}};
         int score = 0;
 
         for (Coordinaat& coordinaat : coordinaten) {
@@ -59,11 +59,9 @@ private:
                     int y1 = zelf[i][3] + coordinaat.j;
                     int x2 = zelf[i][4] + coordinaat.i;
                     int y2 = zelf[i][5] + coordinaat.j;
-
-
-                    if (inBordMatrix(x, y, spel) && spel->bord[x][y] == speler && ((spel->bord[x1][y1] != speler &&
-                        spel->bord[x1][y1] != LEEG_VAKJE) || (spel->bord[x2][y2] != speler &&
-                        spel->bord[x2][y2] != LEEG_VAKJE))) {
+                    if (inBordMatrix(x, y, spel) && spel->bord[x][y] == speler &&
+                        ((spel->bord[x1][y1] != speler && spel->bord[x1][y1] != LEEG_VAKJE) ||
+                         (spel->bord[x2][y2] != speler && spel->bord[x2][y2] != LEEG_VAKJE))) {
                         ++score;
                     }
                 }
@@ -110,7 +108,7 @@ public:
         }
 
         if (allemaalDezelfde) {
-            return scoreSpeler+scoreTegenstanders;
+            return scoreSpeler + scoreTegenstanders;
         } else if (scoreSpeler > scoreTegenstanders) {
             return scoreSpeler / scoreTegenstanders;
         } else {
