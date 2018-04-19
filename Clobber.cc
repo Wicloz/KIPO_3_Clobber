@@ -240,8 +240,8 @@ int main(int argc, char *argv[ ]) {
     int n = atoi(argv[2]);
     srand(atoi(argv[3]));
 
-    int playingStyle = argv[4] == "minimax" ? MINIMAX : -1;
-    playingStyle = argv[4] == "alphaBeta" ? ALPHABETA : playingStyle;
+    int playingStyle = string(argv[4]) == "minimax" ? MINIMAX : -1;
+    playingStyle = string(argv[4]) == "alphaBeta" ? ALPHABETA : playingStyle;
 
     Clobber potje(m, n, playingStyle);
     clock_t begin = clock();

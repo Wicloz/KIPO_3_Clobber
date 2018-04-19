@@ -10,7 +10,7 @@ print("**This script performs evaluation of AI playing style of Clobber.**\n**Th
 speler = 0
 boardSize = ['6', '6']
 n = 40
-file = ['./cmake-build-debug/KIPO_3_Clobber']
+file = './cmake-build-debug/KIPO_3_Clobber'
 playingTypes = ['alphaBeta', 'minimax']
 
 # n random seeds
@@ -22,7 +22,7 @@ results = np.empty((n, len(playingTypes)))
 # Play tetris
 for playingType in playingTypes:
     for seed in seeds:
-        output = sp.check_output([file, boardSize[0], boardSize[1], seed, playingTypes], universal_newlines=True)
+        output = sp.check_output([file, boardSize[0], boardSize[1], seed, playingType], universal_newlines=True)
         results[seeds.index(seed)][files.index(file)] = int((output.splitlines()[-2]).split(' ')[-1])
 
 # Calculate avarage
