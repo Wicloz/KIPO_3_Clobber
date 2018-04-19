@@ -13,7 +13,7 @@
 //
 
 #include <iostream>
-#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 const int MAX_BORD = 100;
@@ -239,7 +239,7 @@ int main(int argc, char *argv[ ]) {
     srand(atoi(argv[3]));
 
     int playingStyle = string(argv[4]) == "minimax" ? MINIMAX : -1;
-    playingStyle = string(argv[4]) == "alphaBeta" ? ALPHABETA : playingStyle;
+    playingStyle = string(argv[4]) == "alphabeta" ? ALPHABETA : playingStyle;
 
     Clobber potje(m, n, playingStyle);
     clock_t begin = clock();

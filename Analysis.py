@@ -11,7 +11,7 @@ speler = 0
 boardSize = ['4', '4']
 n = 20
 file = './cmake-build-debug/KIPO_3_Clobber'
-playingTypes = ['alphaBeta']
+playingTypes = ['alphabeta']
 
 # n random seeds
 seeds = [str(x) for x in sample(range(100000, 100000000), n)]
