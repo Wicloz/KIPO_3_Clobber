@@ -11,7 +11,7 @@ const int ALPHABETA = 1;
 
 inline bool inBordMatrix(const int& i, const int& j, const Clobber* spel) {
     return i >= 0 && j >= 0 && i < spel->hoogte && j < spel->breedte;
-}
+};
 
 struct Coordinaat {
     Coordinaat(const int& i, const int& j) : i(i), j(j) {};
@@ -27,14 +27,14 @@ private:
     int eersteKleur = LEEG_VAKJE;
 
     int scoreBlok(const int& speler) {
-        int ander[4][2] = {{0,  -1},
-                           {0,  1},
+        int ander[4][2] = {{ 0,-1},
+                           { 0, 1},
                            {-1, 0},
-                           {1,  0}};
-        int zelf[4][6] = {{-1, -1, 0,  -1, -1, 0},
-                          {-1, 1,  -1, 0,  0,  1},
-                          {1,  -1, 1,  0,  0,  -1},
-                          {1,  1,  0,  1,  1,  0}};
+                           { 1, 0}};
+        int zelf[4][6] = {{-1,-1, 0,-1,-1, 0},
+                          {-1, 1,-1, 0, 0, 1},
+                          { 1,-1, 1, 0, 0 -1},
+                          { 1, 1, 0, 1, 1, 0}};
         int score = 0;
 
         for (Coordinaat& coordinaat : coordinaten) {
@@ -60,9 +60,10 @@ private:
                     int x2 = zelf[i][4] + coordinaat.i;
                     int y2 = zelf[i][5] + coordinaat.j;
 
-                    if (inBordMatrix(x, y, spel) && spel->bord[x][y] == speler && spel->bord[x1][y1] != speler &&
-                        spel->bord[x1][y1] != LEEG_VAKJE && spel->bord[x2][y2] != speler &&
-                        spel->bord[x2][y2] != LEEG_VAKJE) {
+
+                    if (inBordMatrix(x, y, spel) && spel->bord[x][y] == speler && ((spel->bord[x1][y1] != speler &&
+                        spel->bord[x1][y1] != LEEG_VAKJE) || (spel->bord[x2][y2] != speler &&
+                        spel->bord[x2][y2] != LEEG_VAKJE))) {
                         ++score;
                     }
                 }
@@ -99,20 +100,18 @@ public:
         }
     };
 
-    int blokEvaluatie(const int& speler) {
-        if (allemaalDezelfde) {
-            return 0;
-        }
-
-        int scoreSpeler = scoreBlok(speler);
-        int scoreTegenstanders = 0;
+    float blokEvaluatie(const int& speler) {
+        float scoreSpeler = scoreBlok(speler);
+        float scoreTegenstanders = 0;
         for (int i = 0; i < spel->aantalSpelers; ++i) {
             if (i != speler) {
                 scoreTegenstanders += scoreBlok(i);
             }
         }
 
-        if (scoreSpeler > scoreTegenstanders) {
+        if (allemaalDezelfde) {
+            return scoreSpeler+scoreTegenstanders;
+        } else if (scoreSpeler > scoreTegenstanders) {
             return scoreSpeler / scoreTegenstanders;
         } else {
             return (-1 * scoreTegenstanders) / scoreSpeler;
@@ -145,12 +144,12 @@ public:
 private:
     const int dezeSpeler = 0;
     int playingStyle = ALPHABETA;
-    int cutoffDiepte = 6;
-    int cutoffZetten = 6;
+    int cutoffDiepte = -1;
+    int cutoffZetten = 12;
     bool diepKijken = true;
     Clobber* spel = nullptr;
 
-    int evaluatie(Clobber* spel) {
+    float evaluatie(Clobber* spel) {
         int speler = dezeSpeler;
 
         if (!spel->isBezig()) {
@@ -179,7 +178,7 @@ private:
             }
         }
 
-        int evaluatie = 0;
+        float evaluatie = 0;
         for (Blok& blok : blokken) {
             evaluatie += blok.blokEvaluatie(speler);
         }
@@ -187,18 +186,18 @@ private:
         return evaluatie;
     };
 
-    int miniMaxMax(Clobber* spel, int& zet, const int& diepte) {
+    float miniMaxMax(Clobber* spel, int& zet, const int& diepte) {
         if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
 
-        int waarde = INT_MIN;
+        float waarde = INT_MIN;
 
         for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
             Clobber kopie = *spel;
             kopie.doeZet(i);
 
-            int nieuweWaarde = max(waarde, miniMaxMin(&kopie, zet, diepte + 1));
+            float nieuweWaarde = max(waarde, miniMaxMin(&kopie, zet, diepte + 1));
             if (diepte == 0 && nieuweWaarde > waarde) {
                 zet = i;
             }
@@ -208,12 +207,12 @@ private:
         return waarde;
     };
 
-    int miniMaxMin(Clobber* spel, int& zet, const int& diepte) {
+    float miniMaxMin(Clobber* spel, int& zet, const int& diepte) {
         if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
 
-        int waarde = INT_MAX;
+        float waarde = INT_MAX;
 
         for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
             Clobber kopie = *spel;
@@ -224,7 +223,7 @@ private:
         return waarde;
     };
 
-    int alphaBetaMax(Clobber* spel, int alpha, const int& beta, int& zet, const int& diepte) {
+    float alphaBetaMax(Clobber* spel, float alpha, const float& beta, int& zet, const int& diepte) {
         if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
@@ -233,7 +232,7 @@ private:
             Clobber kopie = *spel;
             kopie.doeZet(i);
 
-            int nieuweAlpha = max(alpha, alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
+            float nieuweAlpha = max(alpha, alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
             if (diepte == 0 && nieuweAlpha > alpha) {
                 zet = i;
             }
@@ -247,7 +246,7 @@ private:
         return alpha;
     };
 
-    int alphaBetaMin(Clobber* spel, const int& alpha, int beta, int& zet, const int& diepte) {
+    float alphaBetaMin(Clobber* spel, const float& alpha, float beta, int& zet, const int& diepte) {
         if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
