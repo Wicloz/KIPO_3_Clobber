@@ -121,14 +121,16 @@ class DeBoerSpaink : public Basisspeler {
 public:
     DeBoerSpaink(Clobber* spelPointer) : spel(spelPointer) {};
 
-    DeBoerSpaink(Clobber* spelPointer, const int& playingStyle) : spel(spelPointer), playingStyle(playingStyle) {};
+    DeBoerSpaink(Clobber* spelPointer, const int& spelerNummer, const int& speelStijl) : spel(spelPointer),
+                                                                                         dezeSpeler(spelerNummer),
+                                                                                         speelStijl(speelStijl) {};
 
     int volgendeZet() {
         int aantalZetten = spel->aantalZetten(spel->aanZet);
         diepKijken = aantalZetten < cutoffZetten;
 
         int zet = rand() % aantalZetten;
-        switch (playingStyle) {
+        switch (speelStijl) {
             case MINIMAX:
                 miniMaxMax(spel, zet, 0);
                 break;
@@ -140,12 +142,12 @@ public:
     };
 
 private:
-    const int dezeSpeler = 0;
-    int playingStyle = ALPHABETA;
-    int cutoffDiepte = -1;
-    int cutoffZetten = 12;
-    bool diepKijken = true;
+    int dezeSpeler = 0;
+    int speelStijl = ALPHABETA;
     Clobber* spel = nullptr;
+    int cutoffDiepte = 0;
+    int cutoffZetten = -1;
+    bool diepKijken = true;
 
     float evaluatie(Clobber* spel) {
         int speler = dezeSpeler;
