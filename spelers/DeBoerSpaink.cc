@@ -19,8 +19,29 @@ struct Coordinaat {
 class Blok {
 private:
     vector<Coordinaat> coordinaten;
-    Clobber* spel;
+    Clobber* spel = nullptr;
     bool allemaalDezelfde = true;
+
+    int scoreBlok(int speler) {
+        int ander[4][2] = {{0,  -1},
+                           {0,  1},
+                           {-1, 0},
+                           {1,  0}};
+        int zelf[4][2] = {{-1, -1},
+                          {-1, 1},
+                          {1,  -1},
+                          {1,  1}};
+        int score = 1;
+        for (Coordinaat& coordinaat : coordinaten) {
+            for (int i = 0; i < 4; ++i) {
+                if (spel->bord[ander[0][i]][ander[1][i]] != speler)
+                    ++score;
+                if (spel->bord[zelf[0][i]][zelf[1][i]] == speler)
+                    ++score;
+            }
+        }
+        return score;
+    };
 
 public:
     Blok(Clobber* spelPointer) : spel(spelPointer) {};
@@ -51,45 +72,21 @@ public:
         }
     };
 
-    int scoreBlok(int speler) {
+    int blokEvaluatie(int speler) {
         if (allemaalDezelfde)
             return 0;
 
-        int ander[4][2] = {{0,  -1},
-                           {0,  1},
-                           {-1, 0},
-                           {1,  0}};
-        int zelf[4][2] = {{-1, -1},
-                          {-1, 1},
-                          {1,  -1},
-                          {1,  1}};
-        int score = 1;
-        for (Coordinaat& coordinaat : coordinaten) {
-            for (int i = 0; i < 4; ++i) {
-                if (spel->bord[ander[0][i]][ander[1][i]] != speler)
-                    ++score;
-                if (spel->bord[zelf[0][i]][zelf[1][i]] == speler)
-                    ++score;
-            }
-        }
-        return score;
-    };
-
-    int blokEvaluatie(int evalSpeler) {
-        if (allemaalDezelfde)
-            return 0;
-
-        int scoreSpeler = scoreBlok(evalSpeler);
-        int scoreTegenstander = 0;
+        int scoreSpeler = scoreBlok(speler);
+        int scoreTegenstanders = 0;
         for (int i = 0; i < spel->aantalSpelers; ++i) {
-            if (i != evalSpeler)
-                scoreTegenstander += scoreBlok(i);
+            if (i != speler)
+                scoreTegenstanders += scoreBlok(i);
         }
 
-        if (scoreSpeler > scoreTegenstander)
-            return scoreSpeler / scoreTegenstander;
+        if (scoreSpeler > scoreTegenstanders)
+            return scoreSpeler / scoreTegenstanders;
         else
-            return -1 * scoreTegenstander / scoreSpeler;
+            return (-1 * scoreTegenstanders) / scoreSpeler;
     };
 };
 
@@ -99,26 +96,24 @@ public:
 
     int volgendeZet() {
         int aantalZetten = spel->aantalZetten(spel->aanZet);
-        diepKijken = aantalZetten < 15;
-        knopenBezocht = 0;
+        diepKijken = aantalZetten < cutoffZetten;
 
         int zet = rand() % aantalZetten;
-
-        alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0);
-//        minimax(spel, zet, 0);
+//        alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0);
+        miniMaxMax(spel, zet, 0);
         return zet;
     };
 
 private:
-    const int evalSpeler = 0;
-    int cutoff = -1;
-    int knopenBezocht = 0;
+    const int dezeSpeler = 0;
+    int cutoffDiepte = 6;
+    int cutoffZetten = 12;
     bool diepKijken = true;
     Clobber* spel = nullptr;
 
     int evaluatie(Clobber* spel) {
         if (!spel->isBezig()) {
-            if (spel->winnaar() == evalSpeler) {
+            if (spel->winnaar() == dezeSpeler) {
                 return INT_MAX;
             } else {
                 return INT_MIN;
@@ -145,25 +140,25 @@ private:
 
         int evaluatie = 0;
         for (Blok& blok : blokken) {
-            evaluatie += blok.blokEvaluatie(evalSpeler);
+            evaluatie += blok.blokEvaluatie(dezeSpeler);
         }
 
         return evaluatie;
     };
 
-    int minimax(Clobber* spel, int& zet, int diepte) {
-        if (!spel->isBezig() || diepte > cutoff) {
+    int miniMaxMax(Clobber* spel, int& zet, int diepte) {
+        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
 
-        int waarde = spel->aanZet ? INT_MIN : INT_MAX;
+        int waarde = INT_MIN;
 
         for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
             Clobber kopie = *spel;
             kopie.doeZet(i);
 
-            int nieuweWaarde = max(waarde, -minimax(&kopie, zet, diepte + 1));
-            if (!diepte && nieuweWaarde > waarde)
+            int nieuweWaarde = max(waarde, miniMaxMin(&kopie, zet, diepte + 1));
+            if (diepte == 0 && nieuweWaarde > waarde)
                 zet = i;
             waarde = nieuweWaarde;
         }
@@ -171,9 +166,24 @@ private:
         return waarde;
     };
 
+    int miniMaxMin(Clobber* spel, int& zet, int diepte) {
+        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
+            return evaluatie(spel);
+        }
+
+        int waarde = INT_MAX;
+
+        for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
+            Clobber kopie = *spel;
+            kopie.doeZet(i);
+            waarde = min(waarde, miniMaxMax(&kopie, zet, diepte + 1));
+        }
+
+        return waarde;
+    };
+
     int alphaBetaMax(Clobber* spel, int alpha, int beta, int& zet, int diepte) {
-        knopenBezocht++;
-        if (!spel->isBezig() || (knopenBezocht > 2000000 && !diepKijken)) {
+        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
 
@@ -193,8 +203,7 @@ private:
     };
 
     int alphaBetaMin(Clobber* spel, int alpha, int beta, int& zet, int diepte) {
-        knopenBezocht++;
-        if (!spel->isBezig() || (knopenBezocht > 2000000 && !diepKijken)) {
+        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
 
