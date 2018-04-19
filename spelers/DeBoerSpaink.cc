@@ -30,7 +30,7 @@ private:
                            {1,  0}};
         int zelf[4][6] = {{-1, -1, 0,  -1, -1, 0},
                           {-1, 1,  -1, 0,  0,  1},
-                          {1,  -1, 1,  0,  0, -1},
+                          {1,  -1, 1,  0,  0,  -1},
                           {1,  1,  0,  1,  1,  0}};
         int score = 0;
 
@@ -43,8 +43,9 @@ private:
                 for (int i = 0; i < 4; ++i) {
                     int x = ander[i][0] + coordinaat.i;
                     int y = ander[i][1] + coordinaat.j;
-                    if (inBordMatrix(x, y, spel) && spel->bord[x][y] != speler && spel->bord[x][y] != LEEG_VAKJE)
+                    if (inBordMatrix(x, y, spel) && spel->bord[x][y] != speler && spel->bord[x][y] != LEEG_VAKJE) {
                         ++score;
+                    }
                 }
 
                 // D
@@ -58,8 +59,9 @@ private:
 
                     if (inBordMatrix(x, y, spel) && spel->bord[x][y] == speler && spel->bord[x1][y1] != speler &&
                         spel->bord[x1][y1] != LEEG_VAKJE && spel->bord[x2][y2] != speler &&
-                        spel->bord[x2][y2] != LEEG_VAKJE)
-                        ++score;
+                        spel->bord[x2][y2] != LEEG_VAKJE) {
+                            ++score;
+                    }
                 }
             }
         }
@@ -95,33 +97,38 @@ public:
     };
 
     int blokEvaluatie(int speler) {
-        if (allemaalDezelfde)
+        if (allemaalDezelfde) {
             return 0;
+        }
 
         int scoreSpeler = scoreBlok(speler);
         int scoreTegenstanders = 0;
         for (int i = 0; i < spel->aantalSpelers; ++i) {
-            if (i != speler)
+            if (i != speler) {
                 scoreTegenstanders += scoreBlok(i);
+            }
         }
 
-        if (scoreSpeler > scoreTegenstanders)
+        if (scoreSpeler > scoreTegenstanders) {
             return scoreSpeler / scoreTegenstanders;
-        else
+        } else {
             return (-1 * scoreTegenstanders) / scoreSpeler;
+        }
     };
 };
 
 class DeBoerSpaink : public Basisspeler {
 public:
-    DeBoerSpaink(Clobber* spelPointer, int playingStyle) : spel(spelPointer), playingStyle(playingStyle){};
+    DeBoerSpaink(Clobber* spelPointer) : spel(spelPointer) {};
+
+    DeBoerSpaink(Clobber* spelPointer, int playingStyle) : spel(spelPointer), playingStyle(playingStyle) {};
 
     int volgendeZet() {
         int aantalZetten = spel->aantalZetten(spel->aanZet);
         diepKijken = aantalZetten < cutoffZetten;
 
         int zet = rand() % aantalZetten;
-        switch(playingStyle) {
+        switch (playingStyle) {
             case MINIMAX:
                 miniMaxMax(spel, zet, 0);
                 break;
@@ -134,7 +141,7 @@ public:
 
 private:
     const int dezeSpeler = 0;
-    int playingStyle;
+    int playingStyle = ALPHABETA;
     int cutoffDiepte = 6;
     int cutoffZetten = 6;
     bool diepKijken = true;
@@ -187,8 +194,9 @@ private:
             kopie.doeZet(i);
 
             int nieuweWaarde = max(waarde, miniMaxMin(&kopie, zet, diepte + 1));
-            if (diepte == 0 && nieuweWaarde > waarde)
+            if (diepte == 0 && nieuweWaarde > waarde) {
                 zet = i;
+            }
             waarde = nieuweWaarde;
         }
 
@@ -221,11 +229,13 @@ private:
             kopie.doeZet(i);
 
             int nieuweAlpha = max(alpha, alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
-            if (!diepte && nieuweAlpha > alpha)
+            if (!diepte && nieuweAlpha > alpha) {
                 zet = i;
+            }
             alpha = nieuweAlpha;
-            if (alpha >= beta)
+            if (alpha >= beta) {
                 return beta;
+            }
         }
 
         return alpha;
@@ -241,8 +251,9 @@ private:
             kopie.doeZet(i);
 
             beta = min(beta, alphaBetaMax(&kopie, alpha, beta, zet, diepte + 1));
-            if (beta >= alpha)
+            if (beta >= alpha) {
                 return alpha;
+            }
         }
 
         return beta;
