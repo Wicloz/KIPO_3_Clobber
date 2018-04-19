@@ -229,10 +229,11 @@ private:
             kopie.doeZet(i);
 
             int nieuweAlpha = max(alpha, alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
-            if (!diepte && nieuweAlpha > alpha) {
+            if (diepte == 0 && nieuweAlpha > alpha) {
                 zet = i;
             }
             alpha = nieuweAlpha;
+
             if (alpha >= beta) {
                 return beta;
             }
