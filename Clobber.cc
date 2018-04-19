@@ -20,8 +20,6 @@ const int MAX_BORD = 100;
 const int MAX_SPELERS = 50;
 const int ONBEKEND = -1;
 const int LEEG_VAKJE = -1;
-const int MINIMAX = 0;
-const int ALPHABETA = 1;
 
 class Basisspeler;
 

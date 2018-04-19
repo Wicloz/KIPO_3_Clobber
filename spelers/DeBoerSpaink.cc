@@ -4,6 +4,9 @@
 
 using namespace std;
 
+const int MINIMAX = 0;
+const int ALPHABETA = 1;
+
 // https://www.researchgate.net/publication/221932254_New_Trends_in_Clobber_Programming
 
 bool inBordMatrix(int i, int j, Clobber* spel) {
@@ -60,7 +63,7 @@ private:
                     if (inBordMatrix(x, y, spel) && spel->bord[x][y] == speler && spel->bord[x1][y1] != speler &&
                         spel->bord[x1][y1] != LEEG_VAKJE && spel->bord[x2][y2] != speler &&
                         spel->bord[x2][y2] != LEEG_VAKJE) {
-                            ++score;
+                        ++score;
                     }
                 }
             }
