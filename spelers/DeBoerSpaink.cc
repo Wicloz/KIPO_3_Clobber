@@ -9,12 +9,12 @@ const int ALPHABETA = 1;
 
 // https://www.researchgate.net/publication/221932254_New_Trends_in_Clobber_Programming
 
-bool inBordMatrix(int i, int j, Clobber* spel) {
+inline bool inBordMatrix(const int& i, const int& j, const Clobber* spel) {
     return i >= 0 && j >= 0 && i < spel->hoogte && j < spel->breedte;
 }
 
 struct Coordinaat {
-    Coordinaat(int i, int j) : i(i), j(j) {};
+    Coordinaat(const int& i, const int& j) : i(i), j(j) {};
     int i;
     int j;
 };
@@ -26,7 +26,7 @@ private:
     bool allemaalDezelfde = true;
     int eersteKleur = LEEG_VAKJE;
 
-    int scoreBlok(int speler) {
+    int scoreBlok(const int& speler) {
         int ander[4][2] = {{0,  -1},
                            {0,  1},
                            {-1, 0},
@@ -75,7 +75,7 @@ private:
 public:
     Blok(Clobber* spelPointer) : spel(spelPointer) {};
 
-    void vindBlokVakjes(bool (& bezocht)[MAX_BORD][MAX_BORD], int i, int j) {
+    void vindBlokVakjes(bool (& bezocht)[MAX_BORD][MAX_BORD], const int& i, const int& j) {
         for (int k = -1; k < 2; ++k) {
             for (int l = -1; l < 2; ++l) {
                 int x = k + i;
@@ -99,7 +99,7 @@ public:
         }
     };
 
-    int blokEvaluatie(int speler) {
+    int blokEvaluatie(const int& speler) {
         if (allemaalDezelfde) {
             return 0;
         }
@@ -124,7 +124,7 @@ class DeBoerSpaink : public Basisspeler {
 public:
     DeBoerSpaink(Clobber* spelPointer) : spel(spelPointer) {};
 
-    DeBoerSpaink(Clobber* spelPointer, int playingStyle) : spel(spelPointer), playingStyle(playingStyle) {};
+    DeBoerSpaink(Clobber* spelPointer, const int& playingStyle) : spel(spelPointer), playingStyle(playingStyle) {};
 
     int volgendeZet() {
         int aantalZetten = spel->aantalZetten(spel->aanZet);
@@ -151,8 +151,10 @@ private:
     Clobber* spel = nullptr;
 
     int evaluatie(Clobber* spel) {
+        int speler = dezeSpeler;
+
         if (!spel->isBezig()) {
-            if (spel->winnaar() == dezeSpeler) {
+            if (spel->winnaar() == speler) {
                 return INT_MAX;
             } else {
                 return INT_MIN;
@@ -179,13 +181,13 @@ private:
 
         int evaluatie = 0;
         for (Blok& blok : blokken) {
-            evaluatie += blok.blokEvaluatie(dezeSpeler);
+            evaluatie += blok.blokEvaluatie(speler);
         }
 
         return evaluatie;
     };
 
-    int miniMaxMax(Clobber* spel, int& zet, int diepte) {
+    int miniMaxMax(Clobber* spel, int& zet, const int& diepte) {
         if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
@@ -206,7 +208,7 @@ private:
         return waarde;
     };
 
-    int miniMaxMin(Clobber* spel, int& zet, int diepte) {
+    int miniMaxMin(Clobber* spel, int& zet, const int& diepte) {
         if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
@@ -222,7 +224,7 @@ private:
         return waarde;
     };
 
-    int alphaBetaMax(Clobber* spel, int alpha, int beta, int& zet, int diepte) {
+    int alphaBetaMax(Clobber* spel, int alpha, const int& beta, int& zet, const int& diepte) {
         if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
@@ -245,7 +247,7 @@ private:
         return alpha;
     };
 
-    int alphaBetaMin(Clobber* spel, int alpha, int beta, int& zet, int diepte) {
+    int alphaBetaMin(Clobber* spel, const int& alpha, int beta, int& zet, const int& diepte) {
         if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
