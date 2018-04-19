@@ -8,8 +8,8 @@ print("**This script performs evaluation of AI playing style of Clobber.**\n**Th
 
 # Parameters
 speler = 0
-boardSize = ['6', '6']
-n = 40
+boardSize = ['4', '4']
+n = 5
 file = './cmake-build-debug/KIPO_3_Clobber'
 playingTypes = ['alphaBeta', 'minimax']
 
@@ -17,21 +17,21 @@ playingTypes = ['alphaBeta', 'minimax']
 seeds = [str(x) for x in sample(range(100000, 100000000), n)]
 
 # Results storage {random, smart, smarter}
-results = np.empty((n, len(playingTypes)))
+results = np.empty(len(playingTypes))
 
 # Play tetris
 for playingType in playingTypes:
+    result = np.empty(n)
     for seed in seeds:
         output = sp.check_output([file, boardSize[0], boardSize[1], seed, playingType], universal_newlines=True)
-        results[seeds.index(seed)][files.index(file)] = int((output.splitlines()[-2]).split(' ')[-1])
+        result[seeds.index(seed)] = int((output.splitlines()[-2]).split(' ')[-1])
+    results[playingTypes.index(playingType)] = np.count_nonzero(result==1)
 
-# Calculate avarage
-result = [(results.count(speler[:][0])/n)*100, (results.count(speler[:][1])/n)*100]
 
 # Display results
 print("For n = " + str(n))
-print()
+print(results)
 
-pd.DataFrame(result, columns=playingTypes).plot.bar()
+pd.DataFrame(results, index=playingTypes).plot.bar()
 
 plt.pyplot.show()
