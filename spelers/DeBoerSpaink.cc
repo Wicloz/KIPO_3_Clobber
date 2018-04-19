@@ -21,34 +21,56 @@ private:
     vector<Coordinaat> coordinaten;
     Clobber* spel = nullptr;
     bool allemaalDezelfde = true;
+    int eersteKleur = LEEG_VAKJE;
 
     int scoreBlok(int speler) {
         int ander[4][2] = {{0,  -1},
                            {0,  1},
                            {-1, 0},
                            {1,  0}};
-        int zelf[4][2] = {{-1, -1},
-                          {-1, 1},
-                          {1,  -1},
-                          {1,  1}};
-        int score = 1;
+        int zelf[4][6] = {{-1, -1, 0,  -1, -1, 0},
+                          {-1, 1,  -1, 0,  0,  1},
+                          {1,  -1, 1,  0,  0, -1},
+                          {1,  1,  0,  1,  1,  0}};
+        int score = 0;
+
         for (Coordinaat& coordinaat : coordinaten) {
-            for (int i = 0; i < 4; ++i) {
-                if (spel->bord[ander[0][i]][ander[1][i]] != speler)
-                    ++score;
-                if (spel->bord[zelf[0][i]][zelf[1][i]] == speler)
-                    ++score;
+            if (spel->bord[coordinaat.i][coordinaat.j] == speler) {
+                // 1
+                ++score;
+
+                // O
+                for (int i = 0; i < 4; ++i) {
+                    int x = ander[i][0] + coordinaat.i;
+                    int y = ander[i][1] + coordinaat.j;
+                    if (inBordMatrix(x, y, spel) && spel->bord[x][y] != speler && spel->bord[x][y] != LEEG_VAKJE)
+                        ++score;
+                }
+
+                // D
+                for (int i = 0; i < 4; ++i) {
+                    int x = zelf[i][0] + coordinaat.i;
+                    int y = zelf[i][1] + coordinaat.j;
+                    int x1 = zelf[i][2] + coordinaat.i;
+                    int y1 = zelf[i][3] + coordinaat.j;
+                    int x2 = zelf[i][4] + coordinaat.i;
+                    int y2 = zelf[i][5] + coordinaat.j;
+
+                    if (inBordMatrix(x, y, spel) && spel->bord[x][y] == speler && spel->bord[x1][y1] != speler &&
+                        spel->bord[x1][y1] != LEEG_VAKJE && spel->bord[x2][y2] != speler &&
+                        spel->bord[x2][y2] != LEEG_VAKJE)
+                        ++score;
+                }
             }
         }
+
         return score;
     };
 
 public:
     Blok(Clobber* spelPointer) : spel(spelPointer) {};
 
-    void vindBlokVakjes(bool (&bezocht)[MAX_BORD][MAX_BORD], int i, int j) {
-        int eersteKleur = LEEG_VAKJE;
-
+    void vindBlokVakjes(bool (& bezocht)[MAX_BORD][MAX_BORD], int i, int j) {
         for (int k = -1; k < 2; ++k) {
             for (int l = -1; l < 2; ++l) {
                 int x = k + i;
@@ -107,7 +129,7 @@ public:
 private:
     const int dezeSpeler = 0;
     int cutoffDiepte = 6;
-    int cutoffZetten = 12;
+    int cutoffZetten = 6;
     bool diepKijken = true;
     Clobber* spel = nullptr;
 
