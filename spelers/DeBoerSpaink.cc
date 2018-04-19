@@ -39,10 +39,8 @@ private:
 
         for (Coordinaat& coordinaat : coordinaten) {
             if (spel->bord[coordinaat.i][coordinaat.j] == speler) {
-                // 1
                 ++score;
 
-                // O
                 for (int i = 0; i < 4; ++i) {
                     int x = ander[i][0] + coordinaat.i;
                     int y = ander[i][1] + coordinaat.j;
@@ -51,7 +49,6 @@ private:
                     }
                 }
 
-                // D
                 for (int i = 0; i < 4; ++i) {
                     int x = zelf[i][0] + coordinaat.i;
                     int y = zelf[i][1] + coordinaat.j;
