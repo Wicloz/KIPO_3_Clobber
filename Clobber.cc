@@ -232,12 +232,17 @@ int main(int argc, char *argv[ ]) {
       cout << "Gebruik: " << argv[0] << " <hoogte> <breedte> <seed>" << endl;
       return 1;
     }
+
     int m = atoi(argv[1]);
     int n = atoi(argv[2]);
     srand(atoi(argv[3]));
+
     Clobber potje(m, n);
+    clock_t begin = clock();
     int winnaar = potje.speelSpel();
 
     cout << "Winnaar: " << winnaar << endl;
+    cout << "Duratie: " << double(clock() - begin) / CLOCKS_PER_SEC << " seconden" << endl;
+
     return 0;
 }
