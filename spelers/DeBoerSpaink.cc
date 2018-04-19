@@ -108,7 +108,7 @@ public:
         }
 
         if (allemaalDezelfde) {
-            return scoreSpeler + scoreTegenstanders;
+            return scoreSpeler - scoreTegenstanders;
         } else if (scoreSpeler > scoreTegenstanders) {
             return scoreSpeler / scoreTegenstanders;
         } else {
@@ -145,8 +145,8 @@ private:
     int dezeSpeler = 0;
     int speelStijl = ALPHABETA;
     Clobber* spel = nullptr;
-    int cutoffDiepte = 0;
-    int cutoffZetten = -1;
+    int cutoffDiepte = 6;
+    int cutoffZetten = (spel->hoogte + spel->breedte) / 2;
     bool diepKijken = true;
 
     float evaluatie(Clobber* spel) {
