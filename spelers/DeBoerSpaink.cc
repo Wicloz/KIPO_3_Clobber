@@ -92,20 +92,27 @@ public:
 
 class DeBoerSpaink : public Basisspeler {
 public:
-    DeBoerSpaink(Clobber* spelPointer) : spel(spelPointer) {};
+    DeBoerSpaink(Clobber* spelPointer, int playingStyle) : spel(spelPointer), playingStyle(playingStyle){};
 
     int volgendeZet() {
         int aantalZetten = spel->aantalZetten(spel->aanZet);
         diepKijken = aantalZetten < cutoffZetten;
 
         int zet = rand() % aantalZetten;
-//        alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0);
-        miniMaxMax(spel, zet, 0);
+        switch(playingStyle) {
+            case MINIMAX:
+                miniMaxMax(spel, zet, 0);
+                break;
+            case ALPHABETA:
+                alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0);
+                break;
+        }
         return zet;
     };
 
 private:
     const int dezeSpeler = 0;
+    int playingStyle;
     int cutoffDiepte = 6;
     int cutoffZetten = 12;
     bool diepKijken = true;
