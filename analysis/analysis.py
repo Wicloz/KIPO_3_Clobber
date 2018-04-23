@@ -1,3 +1,4 @@
+import math
 import subprocess as sp
 from random import sample
 import pandas as pd
@@ -46,7 +47,8 @@ if __name__ == '__main__':
     df = pd.DataFrame(results, index=playingTypes, columns=['wincount', 'losecount'])
     print(df)
 
-    plot = df.plot.bar(yticks=range(0, n))
+    ystep = int(math.ceil(n / 10))
+    plot = df.plot.bar(yticks=range(0, n + ystep, ystep))
     plt.pyplot.show()
 
     plot.get_figure().savefig('results.svg', format='svg')
