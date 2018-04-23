@@ -215,13 +215,11 @@ private:
             Clobber kopie = *spel;
             kopie.doeZet(i);
 
-            float nieuweWaarde;
             if (kopie.aanZet == dezeSpeler) {
-                nieuweWaarde = miniMaxMax(&kopie, zet, diepte + 1);
+                waarde = min(waarde, miniMaxMax(&kopie, zet, diepte + 1));
             } else {
-                nieuweWaarde = miniMaxMin(&kopie, zet, diepte + 1);
+                waarde = min(waarde, miniMaxMin(&kopie, zet, diepte + 1));
             }
-            waarde = min(waarde, nieuweWaarde);
         }
 
         return waarde;
@@ -259,13 +257,11 @@ private:
             Clobber kopie = *spel;
             kopie.doeZet(i);
 
-            float nieuweBeta;
             if (kopie.aanZet == dezeSpeler) {
-                nieuweBeta = alphaBetaMax(&kopie, alpha, beta, zet, diepte + 1);
+                beta = min(beta, alphaBetaMax(&kopie, alpha, beta, zet, diepte + 1));
             } else {
-                nieuweBeta = alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1);
+                beta = min(beta, alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
             }
-            beta = min(beta, nieuweBeta);
 
             if (beta >= alpha) {
                 return alpha;
