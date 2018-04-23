@@ -48,3 +48,4 @@ if __name__ == '__main__':
     plot = df.plot.bar()
     plt.pyplot.show()
     plot.get_figure().savefig('results.svg', format='svg')
+    plot.get_figure().savefig('results.pdf', format='pdf')
