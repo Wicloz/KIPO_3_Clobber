@@ -8,9 +8,7 @@ const int MINIMAX = 0;
 const int ALPHABETA = 1;
 const int AVGMAX = 2;
 
-// https://www.researchgate.net/publication/221932254_New_Trends_in_Clobber_Programming
-
-inline bool inBordMatrix(const int& i, const int& j, const Clobber* spel) {
+inline bool inBordMatrix(const int& i, const int& j, Clobber* spel) {
     return i >= 0 && j >= 0 && i < spel->hoogte && j < spel->breedte;
 };
 
