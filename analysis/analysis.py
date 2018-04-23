@@ -8,7 +8,7 @@ from multiprocessing import Pool
 ourPlayer = 0
 boardSize = ['6', '6']
 playingTypes = ['minimax', 'alphabeta', 'avgmax']
-n = 10
+n = 20
 fileLocation = '../cmake-build-debug/KIPO_3_Clobber'
 threadCount = 8
 
@@ -25,19 +25,19 @@ def runAnalysis(args):
 if __name__ == '__main__':
     # n random seeds
     seeds = [str(x) for x in sample(range(0, 2147483647), n)]
+    inputs = [(seed, type) for seed in seeds for type in playingTypes]
 
     # results storage
     results = [0 for x in range(0, len(playingTypes))]
 
     # play Clobber
     pool = Pool(threadCount)
-    inputs = [(seed, type) for seed in seeds for type in playingTypes]
-
-    print()
     print('Analysing - ', end='', flush=True)
+
     for output in pool.map(runAnalysis, inputs):
         if output['result'] == ourPlayer:
             results[playingTypes.index(output['type'])] += 1
+
     print(' - Done!')
 
     # display results
@@ -46,5 +46,6 @@ if __name__ == '__main__':
 
     plot = df.plot.bar()
     plt.pyplot.show()
+
     plot.get_figure().savefig('results.svg', format='svg')
     plot.get_figure().savefig('results.pdf', format='pdf')
