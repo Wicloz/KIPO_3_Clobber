@@ -9,9 +9,9 @@ print("**This script performs evaluation of AI playing style of Clobber.**\n**Th
 # Parameters
 speler = 0
 boardSize = ['4', '4']
-n = 20
+n = 10
 file = './cmake-build-debug/KIPO_3_Clobber'
-playingTypes = ['alphabeta']
+playingTypes = ['alphabeta', 'avgmax']
 
 # n random seeds
 seeds = [str(x) for x in sample(range(100000, 100000000), n)]
