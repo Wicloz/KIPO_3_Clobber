@@ -28,7 +28,7 @@ if __name__ == '__main__':
     inputs = [(seed, type) for seed in seeds for type in playingTypes]
 
     # results storage
-    results = [0 for x in range(0, len(playingTypes))]
+    results = [[0, 0] for x in range(0, len(playingTypes))]
 
     # play Clobber
     pool = Pool(threadCount)
@@ -36,15 +36,17 @@ if __name__ == '__main__':
 
     for output in pool.map(runAnalysis, inputs):
         if output['result'] == ourPlayer:
-            results[playingTypes.index(output['type'])] += 1
+            results[playingTypes.index(output['type'])][0] += 1
+        else:
+            results[playingTypes.index(output['type'])][1] += 1
 
     print(' - Done!')
 
     # display results
-    df = pd.DataFrame(results, index=playingTypes, columns=['wincount'])
+    df = pd.DataFrame(results, index=playingTypes, columns=['wincount', 'losecount'])
     print(df)
 
-    plot = df.plot.bar()
+    plot = df.plot.bar(yticks=range(0, n))
     plt.pyplot.show()
 
     plot.get_figure().savefig('results.svg', format='svg')
