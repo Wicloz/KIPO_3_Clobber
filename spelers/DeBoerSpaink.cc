@@ -143,12 +143,13 @@ public:
     };
 
 private:
+    Clobber* spel = nullptr;
+    bool diepKijken = true;
+
     int dezeSpeler = 0;
     int speelStijl = ALPHABETA;
-    Clobber* spel = nullptr;
     int cutoffDiepte = 6;
     int cutoffZetten = (spel->hoogte + spel->breedte) / 2;
-    bool diepKijken = true;
 
     float evaluatie(Clobber* spel) {
         int speler = dezeSpeler;

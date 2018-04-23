@@ -1,15 +1,14 @@
 import subprocess as sp
 from random import sample
 import pandas as pd
-import numpy as np
 import matplotlib as plt
 from multiprocessing import Pool
 
 # parameters
 ourPlayer = 0
-boardSize = ['4', '4']
+boardSize = ['6', '6']
 playingTypes = ['minimax', 'alphabeta', 'avgmax']
-n = 1
+n = 10
 fileLocation = '../cmake-build-debug/KIPO_3_Clobber'
 threadCount = 8
 
