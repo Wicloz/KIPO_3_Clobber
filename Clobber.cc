@@ -240,6 +240,7 @@ int main(int argc, char *argv[ ]) {
 
     int playingStyle = string(argv[4]) == "minimax" ? MINIMAX : -1;
     playingStyle = string(argv[4]) == "alphabeta" ? ALPHABETA : playingStyle;
+    playingStyle = string(argv[4]) == "avgmax" ? AVGMAX : playingStyle;
 
     Clobber potje(m, n, playingStyle);
     clock_t begin = clock();

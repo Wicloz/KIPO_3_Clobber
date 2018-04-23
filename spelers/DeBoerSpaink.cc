@@ -6,6 +6,7 @@ using namespace std;
 
 const int MINIMAX = 0;
 const int ALPHABETA = 1;
+const int AVGMAX = 2;
 
 // https://www.researchgate.net/publication/221932254_New_Trends_in_Clobber_Programming
 
@@ -134,6 +135,9 @@ public:
             case ALPHABETA:
                 alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0);
                 break;
+            case AVGMAX:
+                avgMaxMax(spel, zet, 0);
+                break;
         }
         return zet;
     };
@@ -181,6 +185,49 @@ private:
         }
 
         return evaluatie;
+    };
+
+    float avgMaxMax(Clobber* spel, int& zet, const int& diepte) {
+        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
+            return evaluatie(spel);
+        }
+
+        float waarde = INT_MIN;
+
+        for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
+            Clobber kopie = *spel;
+            kopie.doeZet(i);
+
+            float nieuweWaarde = max(waarde, avgMaxAvg(&kopie, zet, diepte + 1));
+            if (diepte == 0 && nieuweWaarde > waarde) {
+                zet = i;
+            }
+            waarde = nieuweWaarde;
+        }
+
+        return waarde;
+    };
+
+    float avgMaxAvg(Clobber* spel, int& zet, const int& diepte) {
+        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
+            return evaluatie(spel);
+        }
+
+        float totaal = 0;
+        float aantalZetten = spel->aantalZetten(spel->aanZet);
+
+        for (int i = 0; i < aantalZetten; ++i) {
+            Clobber kopie = *spel;
+            kopie.doeZet(i);
+
+            if (kopie.aanZet == dezeSpeler) {
+                totaal += avgMaxMax(&kopie, zet, diepte + 1);
+            } else {
+                totaal += avgMaxAvg(&kopie, zet, diepte + 1);
+            }
+        }
+
+        return totaal / aantalZetten;
     };
 
     float miniMaxMax(Clobber* spel, int& zet, const int& diepte) {
