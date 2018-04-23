@@ -273,7 +273,7 @@ private:
         return waarde;
     };
 
-    float alphaBetaMax(Clobber* spel, float alpha, const float& beta, int& zet, const int& diepte) {
+    float alphaBetaMax(Clobber* spel, float alpha, float beta, int& zet, const int& diepte) {
         if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
@@ -296,7 +296,7 @@ private:
         return alpha;
     };
 
-    float alphaBetaMin(Clobber* spel, const float& alpha, float beta, int& zet, const int& diepte) {
+    float alphaBetaMin(Clobber* spel, float alpha, float beta, int& zet, const int& diepte) {
         if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
