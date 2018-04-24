@@ -26,7 +26,7 @@ private:
     bool allemaalDezelfde = true;
     int eersteKleur = LEEG_VAKJE;
 
-    int scoreBlok(const int& speler) {
+    float scoreBlok(const int& speler) {
         int ander[4][2] = {{0,  -1},
                            {0,  1},
                            {-1, 0},
@@ -35,7 +35,7 @@ private:
                           {-1, 1,  -1, 0,  0,  1},
                           {1,  -1, 1,  0,  0,  -1},
                           {1,  1,  0,  1,  1,  0}};
-        int score = 0;
+        float score = 0;
 
         for (Coordinaat& coordinaat : coordinaten) {
             if (spel->bord[coordinaat.i][coordinaat.j] == speler) {
@@ -133,7 +133,7 @@ public:
                 wortelScores.emplace_back(miniMaxMax(spel, zet, 0));
                 break;
             case ALPHABETA:
-                wortelScores.emplace_back(alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0));
+                wortelScores.emplace_back(alphaBetaMax(spel, FLT_MIN, FLT_MAX, zet, 0));
                 break;
             case AVGMAX:
                 wortelScores.emplace_back(avgMaxMax(spel, zet, 0));
@@ -147,7 +147,7 @@ public:
         cout << endl;
         cout << "Score Beste Zet:" << endl;
         for (float& score : wortelScores) {
-            cout << static_cast<int>(round(score)) << endl;
+            cout << score << endl;
         }
         cout << endl;
 
@@ -170,9 +170,9 @@ private:
 
         if (!spel->isBezig()) {
             if (spel->winnaar() == speler) {
-                return INT_MAX / 2;
+                return 9999;
             } else {
-                return INT_MIN / 2;
+                return -9999;
             }
         }
 
@@ -204,7 +204,7 @@ private:
             return evaluatie(spel);
         }
 
-        float waarde = INT_MIN;
+        float waarde = FLT_MIN;
 
         for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
             Clobber kopie = *spel;
@@ -249,7 +249,7 @@ private:
             return evaluatie(spel);
         }
 
-        float waarde = INT_MIN;
+        float waarde = FLT_MIN;
 
         for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
             Clobber kopie = *spel;
@@ -271,7 +271,7 @@ private:
             return evaluatie(spel);
         }
 
-        float waarde = INT_MAX;
+        float waarde = FLT_MAX;
 
         for (int i = 0; i < spel->aantalZetten(spel->aanZet); ++i) {
             Clobber kopie = *spel;
