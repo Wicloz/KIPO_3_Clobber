@@ -123,7 +123,7 @@ public:
 
     int volgendeZet() {
         int aantalZetten = spel->aantalZetten(spel->aanZet);
-        diepKijken = aantalZetten < cutoffZetten;
+        diepKijken = aantalZetten <= cutoffZetten;
 
         int zet = rand() % aantalZetten;
         switch (speelStijl) {
@@ -187,7 +187,7 @@ private:
     };
 
     float avgMaxMax(Clobber* spel, int& zet, const int& diepte) {
-        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
+        if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
 
@@ -208,7 +208,7 @@ private:
     };
 
     float avgMaxAvg(Clobber* spel, int& zet, const int& diepte) {
-        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
+        if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
 
@@ -230,7 +230,7 @@ private:
     };
 
     float miniMaxMax(Clobber* spel, int& zet, const int& diepte) {
-        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
+        if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
 
@@ -251,7 +251,7 @@ private:
     };
 
     float miniMaxMin(Clobber* spel, int& zet, const int& diepte) {
-        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
+        if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
 
@@ -272,7 +272,7 @@ private:
     };
 
     float alphaBetaMax(Clobber* spel, float alpha, float beta, int& zet, const int& diepte) {
-        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
+        if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
 
@@ -295,7 +295,7 @@ private:
     };
 
     float alphaBetaMin(Clobber* spel, float alpha, float beta, int& zet, const int& diepte) {
-        if (!spel->isBezig() || (diepte > cutoffDiepte && !diepKijken)) {
+        if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
 
