@@ -309,7 +309,7 @@ private:
                 beta = min(beta, alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
             }
 
-            if (beta >= alpha) {
+            if (beta <= alpha) {
                 return alpha;
             }
         }
