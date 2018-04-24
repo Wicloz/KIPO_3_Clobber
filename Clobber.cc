@@ -50,6 +50,14 @@ public:
     void volgendeZet();
     bool isBezig() const;
     int speelSpel();
+
+    void setVakje(const int& i, const int& j, const int& kleur) {
+        bord[i][j] = kleur;
+    }
+
+    int getVakje(const int& i, const int& j) const {
+        return bord[i][j];
+    }
 };
 
 class Basisspeler {
@@ -64,12 +72,13 @@ public:
 #include "spelers/MCSpeler.cc"
 #include "spelers/Randomspeler.cc"
 #include "spelers/DeBoerSpaink.cc"
+#include "spelers/Anderen1.cc"
 //TODO voeg regel(s) toe met #include van eigen speler(s)
 
 //TODO bepaal hier welke spelers 0, 1, ... gaan spelen
 int Clobber::initSpelers() {
     spelers[0] = new DeBoerSpaink(this, 0, playingStyle);
-    spelers[1] = new Randomspeler(this);
+    spelers[1] = new AlphaBetaSpeler(this, 6);
     return 2; // aantal spelers
 }
 
