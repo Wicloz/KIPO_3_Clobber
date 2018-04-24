@@ -7,7 +7,7 @@ from multiprocessing import Pool
 
 # parameters
 players = ['0', '1']
-boardSize = ['4', '4']
+boardSize = ['6', '6']
 playingTypes = ['alphabeta', 'minimax', 'avgmax']
 n = 10
 fileLocation = '../cmake-build-debug/KIPO_3_Clobber'
