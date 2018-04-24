@@ -52,7 +52,7 @@ if __name__ == '__main__':
     print(df)
 
     ystep = int(math.ceil(n / 5))
-    plot = df.plot.bar(stacked=True, yticks=range(0, (n * 2) + ystep, ystep), title='Success ratio op een ' + str(boardSize[0]) + 'x' + str(boardSize[1]) + ' bord met nEerste=nTweede=' + str(n))
+    plot = df.plot.bar(stacked=True, yticks=range(0, (n * 2) + ystep, ystep), title='Succes ratio op een ' + str(boardSize[0]) + 'x' + str(boardSize[1]) + ' bord met nEerste=nTweede=' + str(n))
     plot.set_ylabel('Spellen Gespeeld')
     plot.set_xlabel('Gebruikt Algoritme')
     plt.pyplot.show()
