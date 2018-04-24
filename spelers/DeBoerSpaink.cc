@@ -1,6 +1,7 @@
 #include <climits>
 #include <cstdlib>
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -123,26 +124,41 @@ public:
 
     int volgendeZet() {
         int aantalZetten = spel->aantalZetten(spel->aanZet);
-        diepKijken = aantalZetten <= cutoffZetten;
-
         int zet = rand() % aantalZetten;
+        diepKijken = aantalZetten <= cutoffZetten;
+        knopenBezocht.emplace_back(0);
+
         switch (speelStijl) {
             case MINIMAX:
-                miniMaxMax(spel, zet, 0);
+                wortelScores.emplace_back(miniMaxMax(spel, zet, 0));
                 break;
             case ALPHABETA:
-                alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0);
+                wortelScores.emplace_back(alphaBetaMax(spel, INT_MIN, INT_MAX, zet, 0));
                 break;
             case AVGMAX:
-                avgMaxMax(spel, zet, 0);
+                wortelScores.emplace_back(avgMaxMax(spel, zet, 0));
                 break;
         }
+
+        cout << "Knopen Bezocht:" << endl;
+        for (int& bezocht : knopenBezocht) {
+            cout << bezocht << endl;
+        }
+        cout << endl;
+        cout << "Score Beste Zet:" << endl;
+        for (float& score : wortelScores) {
+            cout << static_cast<int>(round(score)) << endl;
+        }
+        cout << endl;
+
         return zet;
     };
 
 private:
     Clobber* spel = nullptr;
     bool diepKijken = false;
+    vector<int> knopenBezocht;
+    vector<float> wortelScores;
 
     int dezeSpeler = 0;
     int speelStijl = ALPHABETA;
@@ -154,9 +170,9 @@ private:
 
         if (!spel->isBezig()) {
             if (spel->winnaar() == speler) {
-                return INT_MAX;
+                return INT_MAX / 2;
             } else {
-                return INT_MIN;
+                return INT_MIN / 2;
             }
         }
 
@@ -183,6 +199,7 @@ private:
     };
 
     float avgMaxMax(Clobber* spel, int& zet, const int& diepte) {
+        knopenBezocht.back()++;
         if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
@@ -204,6 +221,7 @@ private:
     };
 
     float avgMaxAvg(Clobber* spel, int& zet, const int& diepte) {
+        knopenBezocht.back()++;
         if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
@@ -226,6 +244,7 @@ private:
     };
 
     float miniMaxMax(Clobber* spel, int& zet, const int& diepte) {
+        knopenBezocht.back()++;
         if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
@@ -247,6 +266,7 @@ private:
     };
 
     float miniMaxMin(Clobber* spel, int& zet, const int& diepte) {
+        knopenBezocht.back()++;
         if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
@@ -268,6 +288,7 @@ private:
     };
 
     float alphaBetaMax(Clobber* spel, float alpha, float beta, int& zet, const int& diepte) {
+        knopenBezocht.back()++;
         if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
@@ -291,6 +312,7 @@ private:
     };
 
     float alphaBetaMin(Clobber* spel, float alpha, float beta, int& zet, const int& diepte) {
+        knopenBezocht.back()++;
         if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
         }
