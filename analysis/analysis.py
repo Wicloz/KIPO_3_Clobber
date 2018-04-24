@@ -1,3 +1,4 @@
+from __future__ import print_function
 import math
 import subprocess as sp
 from random import sample
