@@ -48,9 +48,9 @@ if __name__ == '__main__':
     print(df)
 
     ystep = int(math.ceil(n / 10))
-    plot = df.plot.bar(yticks=range(0, n + ystep, ystep), title="Win-lose ratio on "+str(boardSize[0])+"x"+str(boardSize[1])+" board with n="+str(n), stacked=True)
-    plot.set_ylabel("Games")
-    plot.set_xlabel("AI's")
+    plot = df.plot.bar(stacked=True, yticks=range(0, n + ystep, ystep), title='Win-Lose ratio on a ' + str(boardSize[0]) + 'x' + str(boardSize[1]) + ' board with n=' + str(n))
+    plot.set_ylabel('Games Played')
+    plot.set_xlabel('Playing Strategies')
     plt.pyplot.show()
 
     plot.get_figure().savefig('results.svg', format='svg')
