@@ -7,9 +7,9 @@ from multiprocessing import Pool
 
 # parameters
 boardSize = ['6', '6']
-playingTypes = ['minimax', 'alphabeta', 'avgmax']
-n = 20
 players = ['0', '1']
+playingTypes = ['alphabeta', 'minimax', 'avgmax']
+n = 10
 fileLocation = '../cmake-build-debug/KIPO_3_Clobber'
 threadCount = 8
 
@@ -48,9 +48,8 @@ if __name__ == '__main__':
     df = pd.DataFrame(results, index=playingTypes, columns=['wincount', 'losecount'])
     print(df)
 
-    n = n * len(players)
-    ystep = int(math.ceil(n / 10))
-    plot = df.plot.bar(stacked=True, yticks=range(0, n + ystep, ystep), title='Win-Lose ratio on a ' + str(boardSize[0]) + 'x' + str(boardSize[1]) + ' board with n=' + str(n))
+    ystep = int(math.ceil(n / 5))
+    plot = df.plot.bar(stacked=True, yticks=range(0, (n * 2) + ystep, ystep), title='Win-Lose ratio on a ' + str(boardSize[0]) + 'x' + str(boardSize[1]) + ' board with nFirst=nSecond=' + str(n))
     plot.set_ylabel('Games Played')
     plot.set_xlabel('Playing Strategies')
     plt.pyplot.show()
