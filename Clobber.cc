@@ -37,12 +37,12 @@ public:
     int hoogte;
     int breedte;
     int aanZet;
-    int playingStyle;
+    int speelstijl;
     int wij;
     int zij;
 
     Clobber();
-    Clobber(const int hoogte, const int breedte, int playingStyle, int wij, int zij);
+    Clobber(const int hoogte, const int breedte, int speelstijl, int wij, int zij);
     void init();
     void print() const;
     int winnaar() const;
@@ -80,17 +80,17 @@ public:
 
 //TODO bepaal hier welke spelers 0, 1, ... gaan spelen
 int Clobber::initSpelers() {
-    spelers[wij] = new DeBoerSpaink(this, wij, playingStyle);
+    spelers[wij] = new DeBoerSpaink(this, wij, speelstijl);
     spelers[zij] = new Randomspeler(this);
     return 2; // aantal spelers
 }
 
 Clobber::Clobber() {}
 
-Clobber::Clobber(const int hoogte, const int breedte, const int playingStyle, const int wij, const int zij) {
+Clobber::Clobber(const int hoogte, const int breedte, const int speelstijl, const int wij, const int zij) {
     this->hoogte = hoogte;
     this->breedte = breedte;
-    this->playingStyle = playingStyle;
+    this->speelstijl = speelstijl;
     this->wij = wij;
     this->zij = zij;
     init();
@@ -253,14 +253,14 @@ int main(int argc, char *argv[ ]) {
     int n = atoi(argv[2]);
     srand(atoi(argv[3]));
 
-    int playingStyle = string(argv[4]) == "minimax" ? MINIMAX : -1;
-    playingStyle = string(argv[4]) == "alphabeta" ? ALPHABETA : playingStyle;
-    playingStyle = string(argv[4]) == "avgmax" ? AVGMAX : playingStyle;
+    int speelstijl = string(argv[4]) == "minimax" ? MINIMAX : -1;
+    speelstijl = string(argv[4]) == "alphabeta" ? ALPHABETA : speelstijl;
+    speelstijl = string(argv[4]) == "avgmax" ? AVGMAX : speelstijl;
 
     int wij = atoi(argv[5]);
     int zij = !atoi(argv[5]);
 
-    Clobber potje(m, n, playingStyle, wij, zij);
+    Clobber potje(m, n, speelstijl, wij, zij);
 
     clock_t begin = clock();
     int winnaar = potje.speelSpel();
