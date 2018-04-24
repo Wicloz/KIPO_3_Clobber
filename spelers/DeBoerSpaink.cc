@@ -104,7 +104,7 @@ public:
             }
         }
 
-        if (allemaalDezelfde) {
+        if (allemaalDezelfde || scoreSpeler == 0 || scoreTegenstanders == 0) {
             return scoreSpeler - scoreTegenstanders;
         } else if (scoreSpeler > scoreTegenstanders) {
             return scoreSpeler / scoreTegenstanders;
@@ -170,9 +170,9 @@ private:
 
         if (!spel->isBezig()) {
             if (spel->winnaar() == speler) {
-                return 9999;
+                return FLT_MAX - 1;
             } else {
-                return -9999;
+                return FLT_MIN + 1;
             }
         }
 
@@ -226,8 +226,8 @@ private:
             return evaluatie(spel);
         }
 
-        float totaal = 0;
-        float aantalZetten = spel->aantalZetten(spel->aanZet);
+        long double totaal = 0;
+        int aantalZetten = spel->aantalZetten(spel->aanZet);
 
         for (int i = 0; i < aantalZetten; ++i) {
             Clobber kopie = *spel;
@@ -240,7 +240,8 @@ private:
             }
         }
 
-        return totaal / aantalZetten;
+        float gemiddelde = totaal / aantalZetten;
+        return gemiddelde;
     };
 
     float miniMaxMax(Clobber* spel, int& zet, const int& diepte) {
