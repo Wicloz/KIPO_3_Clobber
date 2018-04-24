@@ -142,7 +142,7 @@ public:
 
 private:
     Clobber* spel = nullptr;
-    bool diepKijken = true;
+    bool diepKijken = false;
 
     int dezeSpeler = 0;
     int speelStijl = ALPHABETA;
@@ -167,20 +167,16 @@ private:
             }
         }
 
-        vector<Blok> blokken;
+        float evaluatie = 0;
+
         for (int i = 0; i < spel->hoogte; ++i) {
             for (int j = 0; j < spel->breedte; ++j) {
                 if (spel->bord[i][j] != LEEG_VAKJE && !bezocht[i][j]) {
-                    Blok newBlok = Blok(spel);
-                    newBlok.vindBlokVakjes(bezocht, i, j);
-                    blokken.emplace_back(newBlok);
+                    Blok blok = Blok(spel);
+                    blok.vindBlokVakjes(bezocht, i, j);
+                    evaluatie += blok.blokEvaluatie(speler);
                 }
             }
-        }
-
-        float evaluatie = 0;
-        for (Blok& blok : blokken) {
-            evaluatie += blok.blokEvaluatie(speler);
         }
 
         return evaluatie;
