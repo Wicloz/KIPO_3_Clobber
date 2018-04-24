@@ -38,9 +38,11 @@ public:
     int breedte;
     int aanZet;
     int playingStyle;
+    int wij;
+    int zij;
 
     Clobber();
-    Clobber(const int h, const int b, int playingStyle);
+    Clobber(const int h, const int b, int playingStyle, int wij, int zij);
     void init();
     void print() const;
     int winnaar() const;
@@ -73,18 +75,19 @@ public:
 #include "spelers/Randomspeler.cc"
 #include "spelers/DeBoerSpaink.cc"
 #include "spelers/Anderen1.cc"
+#include "spelers/Anderen2.cc"
 //TODO voeg regel(s) toe met #include van eigen speler(s)
 
 //TODO bepaal hier welke spelers 0, 1, ... gaan spelen
 int Clobber::initSpelers() {
-    spelers[0] = new DeBoerSpaink(this, 0, playingStyle);
-    spelers[1] = new AlphaBetaSpeler(this, 6);
+    spelers[wij] = new DeBoerSpaink(this, wij, playingStyle);
+    spelers[zij] = new AlphaBetaSpeler(this, 6);
     return 2; // aantal spelers
 }
 
 Clobber::Clobber() {}
 
-Clobber::Clobber(const int h, const int b, int playingStyle) : playingStyle(playingStyle) {
+Clobber::Clobber(const int h, const int b, int playingStyle, int wij, int zij) : playingStyle(playingStyle), wij(wij), zij(zij) {
     hoogte = h;
     breedte = b;
     init();
@@ -238,8 +241,8 @@ int Clobber::speelSpel() {
 }
 
 int main(int argc, char *argv[ ]) {
-    if (argc != 5) {
-      cout << "Gebruik: " << argv[0] << " <hoogte> <breedte> <seed> <speelstijl>" << endl;
+    if (argc != 6) {
+      cout << "Gebruik: " << argv[0] << " <hoogte> <breedte> <seed> <speelstijl> <wij>" << endl;
       return 1;
     }
 
@@ -251,7 +254,10 @@ int main(int argc, char *argv[ ]) {
     playingStyle = string(argv[4]) == "alphabeta" ? ALPHABETA : playingStyle;
     playingStyle = string(argv[4]) == "avgmax" ? AVGMAX : playingStyle;
 
-    Clobber potje(m, n, playingStyle);
+    int wij = atoi(argv[5]);
+    int zij = !atoi(argv[5]);
+
+    Clobber potje(m, n, playingStyle, wij, zij);
     clock_t begin = clock();
     int winnaar = potje.speelSpel();
 
