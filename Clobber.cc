@@ -42,7 +42,7 @@ public:
     int zij;
 
     Clobber();
-    Clobber(const int h, const int b, int playingStyle, int wij, int zij);
+    Clobber(const int hoogte, const int breedte, int playingStyle, int wij, int zij);
     void init();
     void print() const;
     int winnaar() const;
@@ -87,9 +87,12 @@ int Clobber::initSpelers() {
 
 Clobber::Clobber() {}
 
-Clobber::Clobber(const int h, const int b, int playingStyle, int wij, int zij) : playingStyle(playingStyle), wij(wij), zij(zij) {
-    hoogte = h;
-    breedte = b;
+Clobber::Clobber(const int hoogte, const int breedte, const int playingStyle, const int wij, const int zij) {
+    this->hoogte = hoogte;
+    this->breedte = breedte;
+    this->playingStyle = playingStyle;
+    this->wij = wij;
+    this->zij = zij;
     init();
 }
 
@@ -242,8 +245,8 @@ int Clobber::speelSpel() {
 
 int main(int argc, char *argv[ ]) {
     if (argc != 6) {
-      cout << "Gebruik: " << argv[0] << " <hoogte> <breedte> <seed> <speelstijl> <wij>" << endl;
-      return 1;
+        cout << "Gebruik: " << argv[0] << " <hoogte> <breedte> <seed> <speelstijl> <wij>" << endl;
+        return 1;
     }
 
     int m = atoi(argv[1]);
@@ -258,6 +261,7 @@ int main(int argc, char *argv[ ]) {
     int zij = !atoi(argv[5]);
 
     Clobber potje(m, n, playingStyle, wij, zij);
+
     clock_t begin = clock();
     int winnaar = potje.speelSpel();
 
