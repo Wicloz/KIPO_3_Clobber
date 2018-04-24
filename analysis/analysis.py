@@ -1,6 +1,6 @@
 import math
 import subprocess as sp
-from random import sample
+import random
 import pandas as pd
 import matplotlib as plt
 from multiprocessing import Pool
@@ -25,8 +25,11 @@ def runAnalysis(args):
     }
 
 if __name__ == '__main__':
+    # constant random seed
+    random.seed(42)
+
     # n random seeds
-    seeds = [str(x) for x in sample(range(0, 2147483647), n)]
+    seeds = [str(x) for x in random.sample(range(0, 2147483647), n)]
     inputs = [(seed, type, player) for seed in seeds for type in playingTypes for player in players]
 
     # results storage
