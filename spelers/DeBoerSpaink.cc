@@ -1,4 +1,4 @@
-#include <climits>
+#include <cfloat>
 #include <cstdlib>
 #include <vector>
 #include <cmath>
