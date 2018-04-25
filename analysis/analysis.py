@@ -6,8 +6,8 @@ import matplotlib as plt
 from multiprocessing import Pool
 
 # parameters
-players = ['0', '1']
 boardSize = ['5', '5']
+players = ['0', '1', '2']
 playingTypes = ['alphabeta', 'minimax', 'avgmax']
 n = 10
 fileLocation = '../cmake-build-debug/KIPO_3_Clobber'
@@ -51,8 +51,9 @@ if __name__ == '__main__':
     df = pd.DataFrame(results, index=playingTypes, columns=['Gewonnen', 'Verloren'])
     print(df)
 
-    ystep = int(math.ceil(n / 5))
-    plot = df.plot.bar(stacked=True, yticks=range(0, (n * 2) + ystep, ystep), title='Succes ratio op een ' + str(boardSize[0]) + 'x' + str(boardSize[1]) + ' bord met nEerste=nTweede=' + str(n))
+    realn = n * len(players)
+    ystep = int(math.ceil(realn / 10))
+    plot = df.plot.bar(stacked=True, yticks=range(0, realn + ystep, ystep), title='Succes ratio op een ' + str(boardSize[0]) + 'x' + str(boardSize[1]) + ' bord met nEerste=nTweede=nDerde=' + str(n))
     plot.set_ylabel('Spellen Gespeeld')
     plot.set_xlabel('Gebruikt Algoritme')
     plt.pyplot.show()
