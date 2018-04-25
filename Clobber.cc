@@ -80,7 +80,7 @@ public:
 //TODO bepaal hier welke spelers 0, 1, ... gaan spelen
 int Clobber::initSpelers() {
     spelers[wij] = new DeBoerSpaink(this, wij, speelstijl, 1);
-    spelers[(wij + 1) % 2] = new DeBoerSpaink(this, (wij + 1) % 2, speelstijl, 6);
+    spelers[(wij + 1) % 2] = new Randomspeler(this);
     return 2; // aantal spelers
 }
 
