@@ -45,7 +45,9 @@ private:
                 for (int i = 0; i < 4; ++i) {
                     int x = ander[i][0] + coordinaat.i;
                     int y = ander[i][1] + coordinaat.j;
-                    if (inBordMatrix(x, y, spel) && spel->bord[x][y] != speler && spel->bord[x][y] != LEEG_VAKJE) {
+                    if (inBordMatrix(x, y, spel) &&
+                        spel->bord[x][y] != speler &&
+                        spel->bord[x][y] != LEEG_VAKJE) {
                         ++score;
                     }
                 }
@@ -57,9 +59,12 @@ private:
                     int y1 = zelf[i][3] + coordinaat.j;
                     int x2 = zelf[i][4] + coordinaat.i;
                     int y2 = zelf[i][5] + coordinaat.j;
-                    if (inBordMatrix(x, y, spel) && spel->bord[x][y] == speler &&
-                        ((spel->bord[x1][y1] != speler && spel->bord[x1][y1] != LEEG_VAKJE) ||
-                         (spel->bord[x2][y2] != speler && spel->bord[x2][y2] != LEEG_VAKJE))) {
+                    if (inBordMatrix(x, y, spel) &&
+                        spel->bord[x][y] == speler &&
+                        ((spel->bord[x1][y1] != speler &&
+                          spel->bord[x1][y1] != LEEG_VAKJE) ||
+                         (spel->bord[x2][y2] != speler &&
+                          spel->bord[x2][y2] != LEEG_VAKJE))) {
                         ++score;
                     }
                 }
@@ -72,12 +77,14 @@ private:
 public:
     Blok(Clobber* spelPointer) : spel(spelPointer) {};
 
-    void vindBlokVakjes(bool (& bezocht)[MAX_BORD][MAX_BORD], const int& i, const int& j) {
+    void vindBlokVakjes(bool (& bezocht)[MAX_BORD][MAX_BORD], const int& i,
+                        const int& j) {
         for (int k = -1; k < 2; ++k) {
             for (int l = -1; l < 2; ++l) {
                 int x = k + i;
                 int y = l + j;
-                if (inBordMatrix(x, y, spel) && (l == 0 || k == 0) && !bezocht[x][y] &&
+                if (inBordMatrix(x, y, spel) && (l == 0 || k == 0) &&
+                    !bezocht[x][y] &&
                     spel->bord[x][y] != LEEG_VAKJE) {
 
                     if (eersteKleur == LEEG_VAKJE) {
@@ -119,9 +126,10 @@ class DeBoerSpaink : public Basisspeler {
 public:
     DeBoerSpaink(Clobber* spelPointer) : spel(spelPointer) {};
 
-    DeBoerSpaink(Clobber* spelPointer, const int& spelerNummer, const int& speelStijl) : spel(spelPointer),
-                                                                                         dezeSpeler(spelerNummer),
-                                                                                         speelStijl(speelStijl) {};
+    DeBoerSpaink(Clobber* spelPointer, const int& spelerNummer,
+                 const int& speelStijl) : spel(spelPointer),
+                                          dezeSpeler(spelerNummer),
+                                          speelStijl(speelStijl) {};
 
     int volgendeZet() {
         int aantalZetten = spel->aantalZetten(spel->aanZet);
@@ -134,7 +142,8 @@ public:
                 wortelScores.emplace_back(miniMaxMax(spel, zet, 0));
                 break;
             case ALPHABETA:
-                wortelScores.emplace_back(alphaBetaMax(spel, FLT_MIN, FLT_MAX, zet, 0));
+                wortelScores.emplace_back(
+                        alphaBetaMax(spel, FLT_MIN, FLT_MAX, zet, 0));
                 break;
             case AVGMAX:
                 wortelScores.emplace_back(avgMaxMax(spel, zet, 0));
@@ -211,7 +220,8 @@ private:
             Clobber kopie = *spel;
             kopie.doeZet(i);
 
-            float nieuweWaarde = max(waarde, avgMaxAvg(&kopie, zet, diepte + 1));
+            float nieuweWaarde = max(waarde,
+                                     avgMaxAvg(&kopie, zet, diepte + 1));
             if (diepte == 0 && nieuweWaarde > waarde) {
                 zet = i;
             }
@@ -257,7 +267,8 @@ private:
             Clobber kopie = *spel;
             kopie.doeZet(i);
 
-            float nieuweWaarde = max(waarde, miniMaxMin(&kopie, zet, diepte + 1));
+            float nieuweWaarde = max(waarde,
+                                     miniMaxMin(&kopie, zet, diepte + 1));
             if (diepte == 0 && nieuweWaarde > waarde) {
                 zet = i;
             }
@@ -289,7 +300,8 @@ private:
         return waarde;
     };
 
-    float alphaBetaMax(Clobber* spel, float alpha, float beta, int& zet, const int& diepte) {
+    float alphaBetaMax(Clobber* spel, float alpha, float beta, int& zet,
+                       const int& diepte) {
         knopenBezocht.back()++;
         if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
@@ -299,7 +311,9 @@ private:
             Clobber kopie = *spel;
             kopie.doeZet(i);
 
-            float nieuweAlpha = max(alpha, alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
+            float nieuweAlpha = max(alpha,
+                                    alphaBetaMin(&kopie, alpha, beta, zet,
+                                                 diepte + 1));
             if (diepte == 0 && nieuweAlpha > alpha) {
                 zet = i;
             }
@@ -313,7 +327,8 @@ private:
         return alpha;
     };
 
-    float alphaBetaMin(Clobber* spel, float alpha, float beta, int& zet, const int& diepte) {
+    float alphaBetaMin(Clobber* spel, float alpha, float beta, int& zet,
+                       const int& diepte) {
         knopenBezocht.back()++;
         if (!spel->isBezig() || (diepte >= cutoffDiepte && !diepKijken)) {
             return evaluatie(spel);
@@ -324,9 +339,11 @@ private:
             kopie.doeZet(i);
 
             if (kopie.aanZet == dezeSpeler) {
-                beta = min(beta, alphaBetaMax(&kopie, alpha, beta, zet, diepte + 1));
+                beta = min(beta,
+                           alphaBetaMax(&kopie, alpha, beta, zet, diepte + 1));
             } else {
-                beta = min(beta, alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
+                beta = min(beta,
+                           alphaBetaMin(&kopie, alpha, beta, zet, diepte + 1));
             }
 
             if (beta <= alpha) {
