@@ -26,15 +26,16 @@ private:
     bool allemaalDezelfde = true;
     int eersteKleur = LEEG_VAKJE;
 
+    const int ander[4][2] = {{0,  -1},
+                             {0,  1},
+                             {-1, 0},
+                             {1,  0}};
+    const int zelf[4][6] = {{-1, -1, 0,  -1, -1, 0},
+                            {-1, 1,  -1, 0,  0,  1},
+                            {1,  -1, 1,  0,  0,  -1},
+                            {1,  1,  0,  1,  1,  0}};
+
     float scoreBlok(const int& speler) {
-        int ander[4][2] = {{0,  -1},
-                           {0,  1},
-                           {-1, 0},
-                           {1,  0}};
-        int zelf[4][6] = {{-1, -1, 0,  -1, -1, 0},
-                          {-1, 1,  -1, 0,  0,  1},
-                          {1,  -1, 1,  0,  0,  -1},
-                          {1,  1,  0,  1,  1,  0}};
         float score = 0;
 
         for (Coordinaat& coordinaat : coordinaten) {
