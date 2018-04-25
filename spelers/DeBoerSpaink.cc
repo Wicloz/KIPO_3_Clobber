@@ -1,3 +1,10 @@
+/* DeBoerSpaink.cc
+ * Wilco de Boer, Hermes Spaink
+ * Heeft minstens c++11 nodig voor compilatie
+ * Kan gebruikt worden net als de andere spelers,
+ * zie PARAMETERS voor waarden die aangepast kunnen worden
+ */
+
 #include <cfloat>
 #include <cstdlib>
 #include <vector>
@@ -131,6 +138,13 @@ public:
                                           dezeSpeler(spelerNummer),
                                           speelStijl(speelStijl) {};
 
+    DeBoerSpaink(Clobber* spelPointer, const int& spelerNummer,
+                 const int& speelStijl, const int& cutoffDiepte)
+            : spel(spelPointer),
+              dezeSpeler(spelerNummer),
+              speelStijl(speelStijl),
+              cutoffDiepte(cutoffDiepte) {};
+
     int volgendeZet() {
         int aantalZetten = spel->aantalZetten(spel->aanZet);
         int zet = rand() % aantalZetten;
@@ -170,10 +184,16 @@ private:
     vector<int> knopenBezocht;
     vector<float> wortelScores;
 
+    /**************
+     * PARAMETERS *
+     **************/
     int dezeSpeler = 0;
     int speelStijl = ALPHABETA;
     int cutoffDiepte = 6;
     int cutoffZetten = (spel->hoogte + spel->breedte) / 2;
+    /**************
+     * PARAMETERS *
+     **************/
 
     float evaluatie(Clobber* spel) {
         int speler = dezeSpeler;
