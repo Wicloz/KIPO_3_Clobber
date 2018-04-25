@@ -6,8 +6,8 @@ import matplotlib as plt
 from multiprocessing import Pool
 
 # parameters
-boardSize = ['5', '5']
 players = ['0', '1', '2']
+boardSize = ['5', '5']
 playingTypes = ['alphabeta', 'minimax', 'avgmax']
 n = 10
 fileLocation = '../cmake-build-debug/KIPO_3_Clobber'
