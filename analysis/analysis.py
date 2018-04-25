@@ -6,7 +6,7 @@ import matplotlib as plt
 from multiprocessing import Pool
 
 # parameters
-players = ['0', '1', '2']
+players = ['0', '1']
 boardSize = ['5', '5']
 playingTypes = ['alphabeta', 'minimax', 'avgmax']
 n = 10
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
     realn = n * len(players)
     ystep = int(math.ceil(realn / 10))
-    plot = df.plot.bar(stacked=True, yticks=range(0, realn + ystep, ystep), title='Succes ratio op een ' + str(boardSize[0]) + 'x' + str(boardSize[1]) + ' bord met nEerste=nTweede=nDerde=' + str(n))
+    plot = df.plot.bar(stacked=True, yticks=range(0, realn + ystep, ystep), title='Succes ratio op een ' + str(boardSize[0]) + 'x' + str(boardSize[1]) + ' bord met nEerste=nTweede=' + str(n))
     plot.set_ylabel('Spellen Gespeeld')
     plot.set_xlabel('Gebruikt Algoritme')
     plt.pyplot.show()
